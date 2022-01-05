@@ -1,0 +1,59 @@
+.dialogue__window {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  left: 37%;
+  top: 40%;
+  background-color: $color-grey-light-2;
+  font-size: 1.45rem;
+  color: $color-grey-dark-1;
+  // font-weight: 700;
+  border: 1px solid gray;
+  border-radius: 2rem;
+  width: 50rem;
+  min-height: 15rem;
+  max-height: max-content;
+  opacity: 0;
+  transition: opacity 2s;
+  z-index: 1001;
+  cursor: pointer;
+  box-shadow: 0 0 3rem gray;
+}
+
+.confirm__window {
+  position: absolute;
+  left: 37%;
+  top: 35%;
+  width: 50rem;
+  height: 20rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  background-color: $color-grey-light-3;
+  padding: 1rem;
+  border: 1px solid $color-grad-2;
+  border-radius: 10px;
+  box-shadow: 0 0 3rem gray;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.5s;
+  z-index: 500;
+}
+
+.confirm-message-box {
+  display: flex;
+  justify-content: center;
+}
+
+.confirm-message {
+  text-align: center;
+}
+
+.confirm-buttons {
+  width: 40rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

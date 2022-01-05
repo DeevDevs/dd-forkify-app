@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
+      rel="stylesheet"
+    />
+    <link rel="shortcut icon" href="src/img/favicon.png" type="image/x-icon" />
+
+    <link rel="stylesheet" href="src/sass/main.scss" />
+    <script defer type="module" src="src/js/controller.js"></script>
+
+    <title>forkify // Search over 1,000,000 recipes</title>
+  </head>
+
+  <body class="body">
+    <div class="container">
+      <header class="header">
+        <img src="src/img/logo.png" alt="Logo" class="header__logo" />
+        <form class="search">
+          <input
+            type="text"
+            class="search__field"
+            placeholder="Search over 1,000,000 recipes..."
+          />
+          <button class="btn search__btn">
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-search"></use>
+            </svg>
+            <span>Search</span>
+          </button>
+        </form>
+
+        <nav class="nav">
+          <ul class="nav__list">
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--get-Key">
+                <span class="btn__span__name">Get A new Key</span>
+              </button>
+            </li>
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--open-functions">
+                <span>Weekly Plan & Shopping List</span>
+              </button>
+            </li>
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--add-recipe">
+                <svg class="nav__icon">
+                  <use href="src/img/icons.svg#icon-edit"></use>
+                </svg>
+                <span>Add recipe</span>
+              </button>
+            </li>
+            <li class="nav__item">
+              <button class="nav__btn nav__btn--bookmarks">
+                <svg class="nav__icon">
+                  <use href="src/img/icons.svg#icon-bookmark"></use>
+                </svg>
+                <span>Bookmarks</span>
+              </button>
+              <div class="bookmarks">
+                <ul class="bookmarks__list">
+                  <div class="message">
+                    <div>
+                      <svg>
+                        <use href="src/img/icons.svg#icon-smile"></use>
+                      </svg>
+                    </div>
+                    <p>
+                      No bookmarks yet. Find a nice recipe and bookmark it :)
+                    </p>
+                  </div>
+
+                  <!-- <li class="preview">
+                    <a class="preview__link" href="#23456">
+                      <figure class="preview__fig">
+                        <img src="src/img/test-1.jpg" alt="Test" />
+                      </figure>
+                      <div class="preview__data">
+                        <h4 class="preview__name">
+                          Pasta with Tomato Cream ...
+                        </h4>
+                        <p class="preview__publisher">The Pioneer Woman</p>
+                      </div>
+                    </a>
+                  </li> -->
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </header>
+      <div class="search-results">
+        <div class="buttons__box">
+          <button class="btn__extra btn--sort--time hidden">
+            Sort by Time
+          </button>
+          <button class="btn__extra btn--sort--ings hidden">
+            Sort by Ingredients
+          </button>
+        </div>
+
+        <div>
+          <ul class="results">
+            <!-- <a href="#5ed6604591c37cdc054bca57">RECIPE 1</a>
+          <a href="#5ed6604591c37cdc054bcc72">RECIPE 2</a> JUST EXAMPLES -->
+            <!-- 
+          <li class="preview">
+            <a class="preview__link preview__link--active" href="#23456">
+              <figure class="preview__fig">
+                <img src="src/img/test-1.jpg" alt="Test" />
+              </figure>
+              <div class="preview__data">
+                <h4 class="preview__title">Pasta with Tomato Cream ...</h4>
+                <p class="preview__publisher">The Pioneer Woman</p>
+                <div class="preview__user-generated">
+                  <svg>
+                    <use href="src/img/icons.svg#icon-user"></use>
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </li>
+           -->
+          </ul>
+        </div>
+        <div class="pagination">
+          <!-- <button class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-arrow-left"></use>
+            </svg>
+            <span>Page 1</span>
+          </button>
+          <button class="btn--inline pagination__btn--next">
+            <span>Page 3</span>
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-arrow-right"></use>
+            </svg>
+          </button> -->
+        </div>
+
+        <p class="copyright">
+          &copy; Copyright by
+          <a
+            class="twitter-link"
+            target="_blank"
+            href="https://twitter.com/jonasschmedtman"
+            >Jonas Schmedtmann</a
+          >
+          . Use for learning or your portfolio. Don't use to teach. Don't claim
+          as your own. (Add-ons by Dmitriy Vnuchkov)
+        </p>
+      </div>
+      <div class="recipe" draggable="true">
+        <div class="message">
+          <div>
+            <svg>
+              <use href="src/img/icons.svg#icon-smile"></use>
+            </svg>
+          </div>
+          <p>Start by searching for a recipe or an ingredient. Have fun!</p>
+        </div>
+
+        <!-- <div class="spinner">
+          <svg>
+            <use href="src/img/icons.svg#icon-loader"></use>
+          </svg>
+        </div> -->
+
+        <!-- <div class="error">
+            <div>
+              <svg>
+                <use href="src/img/icons.svg#icon-alert-triangle"></use>
+              </svg>
+            </div>
+            <p>No recipes found for your query. Please try again!</p>
+          </div> -->
+
+        <!--
+        <figure class="recipe__fig">
+          <img src="src/img/test-1.jpg" alt="Tomato" class="recipe__img" />
+          <h1 class="recipe__title">
+            <span>Pasta with tomato cream sauce</span>
+          </h1>
+        </figure>
+
+        <div class="recipe__details">
+          <div class="recipe__info">
+            <svg class="recipe__info-icon">
+              <use href="src/img/icons.svg#icon-clock"></use>
+            </svg>
+            <span class="recipe__info-data recipe__info-data--minutes">45</span>
+            <span class="recipe__info-text">minutes</span>
+          </div>
+          <div class="recipe__info">
+            <svg class="recipe__info-icon">
+              <use href="src/img/icons.svg#icon-users"></use>
+            </svg>
+            <span class="recipe__info-data recipe__info-data--people">4</span>
+            <span class="recipe__info-text">servings</span>
+
+            <div class="recipe__info-buttons">
+              <button class="btn--tiny btn--increase-servings">
+                <svg>
+                  <use href="src/img/icons.svg#icon-minus-circle"></use>
+                </svg>
+              </button>
+              <button class="btn--tiny btn--increase-servings">
+                <svg>
+                  <use href="src/img/icons.svg#icon-plus-circle"></use>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="recipe__user-generated">
+            <svg>
+              <use href="src/img/icons.svg#icon-user"></use>
+            </svg>
+          </div>
+          <button class="btn--round">
+            <svg class="">
+              <use href="src/img/icons.svg#icon-bookmark-fill"></use>
+            </svg>
+          </button>
+        </div>
+
+        <div class="recipe__ingredients">
+          <h2 class="heading--2">Recipe ingredients</h2>
+          <ul class="recipe__ingredient-list">
+            <li class="recipe__ingredient">
+              <svg class="recipe__icon">
+                <use href="src/img/icons.svg#icon-check"></use>
+              </svg>
+              <div class="recipe__quantity">1000</div>
+              <div class="recipe__description">
+                <span class="recipe__unit">g</span>
+                pasta
+              </div>
+            </li>
+
+            <li class="recipe__ingredient">
+              <svg class="recipe__icon">
+                <use href="src/img/icons.svg#icon-check"></use>
+              </svg>
+              <div class="recipe__quantity">0.5</div>
+              <div class="recipe__description">
+                <span class="recipe__unit">cup</span>
+                ricotta cheese
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="recipe__directions">
+          <h2 class="heading--2">How to cook it</h2>
+          <p class="recipe__directions-text">
+            This recipe was carefully designed and tested by
+            <span class="recipe__publisher">The Pioneer Woman</span>. Please check out
+            directions at their website.
+          </p>
+          <a
+            class="btn--small recipe__btn"
+            href="http://thepioneerwoman.com/cooking/pasta-with-tomato-cream-sauce/"
+            target="_blank"
+          >
+            <span>Directions</span>
+            <svg class="search__icon">
+              <use href="src/img/icons.svg#icon-arrow-right"></use>
+            </svg>
+          </a>
+        </div>
+        -->
+      </div>
+    </div>
+
+    <div class="overlay hidden"></div>
+    <div class="add-recipe-window hidden">
+      <button class="btn--close-modal">&times;</button>
+      <form class="upload" id="form1">
+        <div class="upload__column">
+          <h3 class="upload__heading">Recipe data</h3>
+          <label>Title</label>
+          <input value="" required name="title" type="text" />
+          <label>URL</label>
+          <input value="" required name="sourceUrl" type="text" />
+          <label>Image URL</label>
+          <input value="" required name="image" type="text" />
+          <label>Publisher</label>
+          <input value="" required name="publisher" type="text" />
+          <label>Prep time</label>
+          <input value="" required name="cookingTime" type="number" />
+          <label>Servings</label>
+          <input value="" required name="servings" type="number" />
+        </div>
+
+        <div class="upload__column ingredients__column">
+          <h3 class="upload__heading ingredients__name">Ingredients</h3>
+          <label id="label-1">Ingredient 1</label>
+          <div class="upload__row__ingredients" id="div-1">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-1" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-1" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-1" placeholder="Description" size="6"/></span>
+          </div>
+          <label id="label-2">Ingredient 2</label>
+          <div class="upload__row__ingredients" id="div-2">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-2" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-2" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-2" placeholder="Description" size="6"/></span>
+          </div>
+          <label id="label-3">Ingredient 3</label>
+          <div class="upload__row__ingredients" id="div-3">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-3" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-3" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-3" placeholder="Description" size="6"/></span>
+          </div>
+          <label id="label-4">Ingredient 4</label>
+          <div class="upload__row__ingredients" id="div-4">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-4" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-4" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-4" placeholder="Description" size="6"/></span>
+          </div>
+          <label id="label-5">Ingredient 5</label>
+          <div class="upload__row__ingredients" id="div-5">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-5" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-5" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-5" placeholder="Description" size="6"/></span>
+          </div>
+          <label id="label-6">Ingredient 6</label>
+          <div class="upload__row__ingredients" id="div-6">
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-q-6" placeholder="Quantity" size="4"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-u-6" placeholder="Unit" size="2"/></span>
+            <!--prettier-ignore -->
+            <span><input value="" type="text" required name="ingredient-d-6" placeholder="Description" size="6"/></span>
+          </div>
+        </div>
+        <button type="submit" class="btn upload__btn" form="form1">
+          <svg>
+            <use href="src/img/icons.svg#icon-upload-cloud"></use>
+          </svg>
+          <span>Upload</span>
+        </button>
+      </form>
+      <div class="upload__buttons">
+        <button class="btn btn__extra btn--add--ing">Add Ingredient</button>
+        <button class="btn btn__extra btn--remove--ing">
+          Remove Ingredient
+        </button>
+      </div>
+    </div>
+
+    <div class="modal__window hidden">
+      <div class="draggingbar">Hold here to drag this window</div>
+      <button class="btn--close-modal__window">&times;</button>
+      <div class="rightSide">
+        <div class="buttons__box">
+          <button class="btn__extra btn--api--use">Count Calories</button>
+          <button class="btn__extra btn--shop--list">
+            Create Shopping List
+          </button>
+          <button class="btn__extra btn--empty--calendar">
+            Empty Weekly Plan
+          </button>
+        </div>
+        <div class="shopcal">Calories Counter</div>
+        <div class="calories__api">
+          Here you will see the approximate number of calories per serving.
+        </div>
+        <div class="shopcal">Shopping List</div>
+        <div class="shopping__list">Empty List</div>
+      </div>
+      <div class="leftSide">
+        <div class="calendar--name">ONE WEEK PLAN</div>
+        <div class="plan__desc">
+          You can drag recipes from the main recipe window and drop them to the
+          weekly plan. You can drag recipes from the plan to the main recipe
+          window to display them. Also, you can doubleclick recipes in this plan
+          to see additional functions.
+        </div>
+        <div class="calendar">
+          <!--  <div class="calendar__day calendar--name" draggable="true" data-day="1"><span class="calendar--name">Day 1</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="2"><span class="calendar--name">Day 2</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="3"><span class="calendar--name">Day 3</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="4"><span class="calendar--name">Day 4</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="5"><span class="calendar--name">Day 5</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="6"><span class="calendar--name">Day 6</span></div>
+              <div class="calendar__day calendar--name" draggable="true" data-day="7"><span class="calendar--name">Day 7</span></div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="key__window hidden">
+      <button class="btn--close-key__window">&times;</button>
+      <div class="key__child key__link__box">
+        <!-- prettier-ignore -->
+        <a  class="key__link" href="https://forkify-api.herokuapp.com/v2" target="_blank"><span>Click here to go to the API and generate a new Key</span></a>
+        <span class="key__child__notes">
+          <!-- Without the Key you cannot add or save recipes. Remember, if you are
+          going to change the key you used before, all your previous Bookmarks
+          will disappear. <br />
+          Also, you will not have access to those recipes you have uploaded so
+          far. To be on a safe side, save your previous Key somewhere, before
+          generating a new one. You can use it to access the recipes you have
+          uploaded. Your currently used Key is: -->
+        </span>
+      </div>
+      <div class="key__child key__field__box">
+        <!-- prettier-ignore -->
+        <span><input value="" type="text" required name="Key" placeholder="Enter your New Key here" size="40" class="new__key__field" /></span>
+      </div>
+      <div class="key__child key__btn__box">
+        <button class="btn__extra btn-save-key">Save New Key</button>
+        <button class="btn__delete btn-delete-key">Delete Current Key</button>
+      </div>
+    </div>
+
+    <div class="confirm__window hidden">
+      <div class="confirm-message-box">
+        <p class="confirm-message">Here I am - the Confirmation Window</p>
+      </div>
+      <div class="confirm-buttons">
+        <button class="btn__extra btn-confirm">Yes</button>
+        <button class="btn__extra btn-cancel">Cancel</button>
+      </div>
+    </div>
+
+    <div class="dialogue__window hidden">Here I am - the Dialogue Window</div>
+
+    <div class="floating__buttons hidden">
+      <button class="btn__extra btn-add-to-calendar">Add Recipe Here</button>
+      <button class="btn__extra btn--empty--day">Empty This Day</button>
+    </div>
+  </body>
+</html>

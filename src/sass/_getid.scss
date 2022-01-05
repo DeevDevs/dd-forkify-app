@@ -1,0 +1,107 @@
+.key__window {
+  position: absolute;
+  left: 37%;
+  top: 30%;
+  width: 50rem;
+  height: 42rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: $color-grey-light-3;
+  padding: 1rem;
+  border: 1px solid $color-grad-2;
+  border-radius: 10px;
+  box-shadow: 0 0 3rem gray;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  transition: all 0.5s;
+  z-index: 500;
+}
+
+.key__child {
+  align-self: center;
+  text-align: center;
+
+  &__notes {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: black;
+    padding-top: 1rem;
+    text-transform: none;
+  }
+}
+
+.current__key {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: black;
+}
+
+.key__link__box {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.key__link {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  text-decoration: none;
+  color: $color-grey-dark-1;
+  box-shadow: 0 0 1rem gray;
+  border-radius: 10px;
+  background-color: blanchedalmond;
+}
+
+.key__link:hover {
+  font-size: 700;
+  color: black;
+  box-shadow: 0 0 2rem gray;
+}
+
+.key__link:active {
+  box-shadow: 0 0 1rem gray;
+}
+
+.key__field__box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  & input {
+    font-size: 1.5rem;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+
+    &::placeholder {
+      color: $color-grey-light-3;
+    }
+  }
+}
+
+.btn--close-key__window {
+  font-family: inherit;
+  color: inherit;
+  position: absolute;
+  top: 0.5rem;
+  right: 1.6rem;
+  font-size: 3.5rem;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.btn__delete {
+  padding: 1rem 1rem;
+  margin: 1rem 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 500;
+  border: none;
+  background-color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
