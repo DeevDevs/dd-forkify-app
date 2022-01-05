@@ -383,8 +383,12 @@ const controlDeleteKey = function () {
 
 ///////////////////////// INITIATING ALL THE LISTENERS AND DATA RETRIEVAL ////////////////////
 
+const newFeature = function () {
+  console.log(`Welcome to the application`);
+};
+
 const init = function () {
-  console.log('Welcome!');
+  newFeature();
   //retrieves bookmarks and weekly plan data from the localStorage
   model.init2();
   // check if the key is there or not
