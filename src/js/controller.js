@@ -18,9 +18,7 @@ import GetIdView from './views/getIdView.js';
 
 import 'regenerator-runtime/runtime'; // it is for polyfilling async await
 import 'core-js/stable'; // it is for polyfilling everything else
-// import { async } from 'regenerator-runtime';
-
-// TO DO: ... Retrieve time and ingredients data in advance to make sorting less demanding in terms of number of requests ...
+import { async } from 'regenerator-runtime';
 
 ///////////////////////////////////////
 ///////////////////////////// DISPLAYING RECIPE ///////////////////////////
@@ -165,7 +163,6 @@ const controlBookmarks = function () {
 const controlAddRecipe = async function (newRecipe) {
   try {
     //load spinner and display the dialogue window
-    // DialogueWindowView.displayDialogueWindow();
     AddRecipeView.renderSpinner();
     //Upload new Recipe
     await model.uploadRecipe(newRecipe);
@@ -232,7 +229,6 @@ const controlShoppingList = function () {
  */
 const controlCalendar = function () {
   //add the recipe to the weekly plan list in model.js
-  // model.updateCalendarList(CalendarView._activeRecipe, CalendarView._curRecipe);
   model.updateCalendarList(CalendarView._curRecipe);
   //render in the UI
   CalendarView.render(model.state.calendarList);
@@ -383,12 +379,7 @@ const controlDeleteKey = function () {
 
 ///////////////////////// INITIATING ALL THE LISTENERS AND DATA RETRIEVAL ////////////////////
 
-const newFeature = function () {
-  console.log(`Welcome to the application`);
-};
-
 const init = function () {
-  newFeature();
   //retrieves bookmarks and weekly plan data from the localStorage
   model.init2();
   // check if the key is there or not
