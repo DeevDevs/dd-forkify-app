@@ -168,7 +168,6 @@ const controlAddRecipe = async function (newRecipe) {
     await model.uploadRecipe(newRecipe);
     //Success message
     AddRecipeView.renderMessage(`Recipe has been successfully uploaded!`);
-    // DialogueWindowView.renderMessage(`Recipe has been successfully uploaded!`);
     //Render new recipe now
     RecipeView.render(model.state.recipe);
     //change ID in the URL - it helps to change the URL without reloading the page
@@ -183,8 +182,9 @@ const controlAddRecipe = async function (newRecipe) {
     }, MODAL_CLOSE_SEC * 1000);
   } catch (err) {
     AddRecipeView.renderError(err.message);
+    console.log(err);
     //return default window
-    AddRecipeView.returnUploadForm();
+    AddRecipeView.returnUploadForm(true);
   }
 };
 

@@ -16,6 +16,7 @@ class AddRecipeView extends View {
 
   ///////////////////////////// MY ADDONS ///////////////////////////
   _numOfIngredients = defaultNumberOfIngredients;
+  _data;
 
   // ** WITH MY ADDONS
   constructor() {
@@ -83,6 +84,8 @@ class AddRecipeView extends View {
         if (e.target.closest('.upload__btn')) {
           const dataArr = new FormData(document.querySelector('.upload'));
           const data = Object.fromEntries(dataArr);
+          this._data = data;
+          console.log(this._data);
           handler(data);
           this._numOfIngredients = defaultNumberOfIngredients;
         }
@@ -152,9 +155,9 @@ class AddRecipeView extends View {
     return `
           <label class="extra__ing"  id="label-${this._numOfIngredients}">Ingredient ${this._numOfIngredients}</label>
           <div class="upload__row__ingredients extra__ing" id="div-${this._numOfIngredients}">
-            <span><input value="" type="text" required name="ingredient-q-${this._numOfIngredients}" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-${this._numOfIngredients}" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-${this._numOfIngredients}" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ${this._numOfIngredients}" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ${this._numOfIngredients}" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ${this._numOfIngredients}" placeholder="Description" size="6"/></span>
           </div>`;
   }
 
@@ -169,10 +172,12 @@ class AddRecipeView extends View {
    * @this {Object} AddRecipeView instanse
    * @author Dmitriy Vnuchkov
    */
-  returnUploadForm() {
+  returnUploadForm(boolean) {
     setTimeout(
       function () {
-        this.defaultWindowContent();
+        if (boolean) {
+          this.defaultWindowContent(true);
+        } else this.defaultWindowContent();
       }.bind(this),
       MODAL_REFRESH_SEC * 1000
     );
@@ -185,63 +190,115 @@ class AddRecipeView extends View {
    * @this {Object} AddRecipeView instanse
    * @author Dmitriy Vnuchkov
    */
-  defaultWindowContent() {
+  defaultWindowContent(withData = false) {
+    let ingredientsHTML;
+    if (withData) {
+      const ingredients = Object.entries(this._data).filter(entry =>
+        entry[0].startsWith('ing')
+      );
+      const setsOfIngredients = [];
+      for (let i = 0; i < (Object.keys(this._data).length - 6) / 3; i++) {
+        const temp = [];
+        ingredients.forEach(entry => {
+          if (entry[0].endsWith(`${i + 1}`)) temp.push(entry);
+        });
+        setsOfIngredients.push(temp);
+      }
+      ingredientsHTML = setsOfIngredients
+        .map((ing, i) => {
+          return `<label id="label-${i + 1}">Ingredient ${i + 1}</label>
+      <div class="upload__row__ingredients" id="div-${i + 1}">
+        <span><input value="${
+          ing[0][1]
+        }" type="text" required name="ingredientZqZ${
+            i + 1
+          }" placeholder="Quantity" size="4"/></span>
+        <span><input value="${
+          ing[1][1]
+        }" type="text" required name="ingredientZuZ${
+            i + 1
+          }" placeholder="Unit" size="2"/></span>
+        <span><input value="${
+          ing[2][1]
+        }" type="text" required name="ingredientZdZ${
+            i + 1
+          }" placeholder="Description" size="6"/></span>
+      </div>`;
+        })
+        .join('');
+    }
     const formHTML = `
       <button class="btn--close-modal">&times;</button>
       <form class="upload" id="form1">
         <div class="upload__column">
           <h3 class="upload__heading">Recipe data</h3>
           <label>Title</label>
-          <input value="" required name="title" type="text" />
+          <input value="${
+            withData ? this._data.title : ''
+          }" required name="title" type="text" />
           <label>URL</label>
-          <input value="" required name="sourceUrl" type="text" />
+          <input value="${
+            withData ? this._data.sourceURL : ''
+          }" required name="sourceUrl" type="text" />
           <label>Image URL</label>
-          <input value="" required name="image" type="text" />
+          <input value="${
+            withData ? this._data.image : ''
+          }" required name="image" type="text" />
           <label>Publisher</label>
-          <input value="" required name="publisher" type="text" />
+          <input value="${
+            withData ? this._data.publisher : ''
+          }" required name="publisher" type="text" />
           <label>Prep time</label>
-          <input value="" required name="cookingTime" type="number" />
+          <input value="${
+            withData ? this._data.cookingTime : ''
+          }" required name="cookingTime" type="number" />
           <label>Servings</label>
-          <input value="" required name="servings" type="number" />
+          <input value="${
+            withData ? this._data.servings : ''
+          }" required name="servings" type="number" />
         </div>
         <div class="upload__column ingredients__column">
           <h3 class="upload__heading ingredients__name">Ingredients</h3>
-          <label id="label-1">Ingredient 1</label>
+          ${
+            withData
+              ? ingredientsHTML
+              : `<label id="label-1">Ingredient 1</label>
           <div class="upload__row__ingredients" id="div-1">
-            <span><input value="" type="text" required name="ingredient-q-1" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-1" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-1" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ1" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ1" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ1" placeholder="Description" size="6"/></span>
           </div>
           <label id="label-2">Ingredient 2</label>
           <div class="upload__row__ingredients" id="div-2">
-            <span><input value="" type="text" required name="ingredient-q-2" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-2" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-2" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ2" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ2" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ2" placeholder="Description" size="6"/></span>
           </div>
           <label id="label-3">Ingredient 3</label>
           <div class="upload__row__ingredients" id="div-3">
-            <span><input value="" type="text" required name="ingredient-q-3" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-3" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-3" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ3" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ3" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ3" placeholder="Description" size="6"/></span>
           </div>
           <label id="label-4">Ingredient 4</label>
           <div class="upload__row__ingredients" id="div-4">
-            <span><input value="" type="text" required name="ingredient-q-4" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-4" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-4" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ4" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ4" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ4" placeholder="Description" size="6"/></span>
           </div>
           <label id="label-5">Ingredient 5</label>
           <div class="upload__row__ingredients" id="div-5">
-            <span><input value="" type="text" required name="ingredient-q-5" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-5" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-5" placeholder="Description" size="6"/></span>
+            <span><input value="" type="text" required name="ingredientZqZ5" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ5" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ5" placeholder="Description" size="6"/></span>
           </div>
           <label id="label-6">Ingredient 6</label>
           <div class="upload__row__ingredients" id="div-6">
-            <span><input value="" type="text" required name="ingredient-q-6" placeholder="Quantity" size="4"/></span>
-            <span><input value="" type="text" required name="ingredient-u-6" placeholder="Unit" size="2"/></span>
-            <span><input value="" type="text" required name="ingredient-d-6" placeholder="Description" size="6"/></span>
-          </div>
+            <span><input value="" type="text" required name="ingredientZqZ6" placeholder="Quantity" size="4"/></span>
+            <span><input value="" type="text" required name="ingredientZuZ6" placeholder="Unit" size="2"/></span>
+            <span><input value="" type="text" required name="ingredientZdZ6" placeholder="Description" size="6"/></span>
+          </div>`
+          }
         </div>
         <button type="submit" class="btn upload__btn" form="form1">
           <svg>

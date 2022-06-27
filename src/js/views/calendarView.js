@@ -182,7 +182,7 @@ class CalendarView extends View {
                      </figure>
                    </div>
                    <div class="previewc__data">
-                      <h4 class="previewc__title">${data.recipe.title}</h4> 
+                      <h4 class="previewc__title calendar-preview-title">${data.recipe.title}</h4> 
                    </div>
                  </li>`
               : ''

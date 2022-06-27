@@ -241,7 +241,7 @@ export const uploadRecipe = async function (newRecipe) {
     //all the ingredients are retrieved
     const ingredients = Object.entries(newRecipe)
       .filter(entry => entry[0].startsWith('ingredient'))
-      .map(entry => [entry[0].split('-'), entry[1]].flat(1));
+      .map(entry => [entry[0].split('Z'), entry[1]].flat(1));
     //and formatted
     let counter = 1;
     const allIng = [];
@@ -332,6 +332,7 @@ export const emptyCalendarDay = function (chosenDay) {
     if (calendarDay.day !== chosenDay) return;
     calendarDay.recipe = {};
   });
+  persistCalendar();
 };
 
 /** MY ADDONS
