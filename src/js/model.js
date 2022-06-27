@@ -1,6 +1,7 @@
 import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE, SPOONACULAR_KEY, SPOONACULAR_URL } from './config.js';
 import { AJAX } from './helpers.js';
+import fracty from 'fracty';
 
 export const state = {
   recipe: {},
@@ -26,7 +27,7 @@ export const state = {
 };
 
 ///////////////////////////////////////////
-///////////////////////////// MAIN RECIPE FUNCTIONS ///////////////////////////
+///////////// MAIN RECIPE FUNCTIONS (ФУНКЦИИ ДЛЯ ГЛАВНОГО ОКНА С РЕЦЕПТОМ) ////////////
 
 /**
  * format the received data into the format comfortable for our application (изменят полученные данные в формат удобный для приложения)
@@ -56,12 +57,13 @@ const createRecipeObject = function (data) {
  * send an AJAX call to get recipe data from the API (отправляет AJAX запрос чтобы получить данные с API)
  * @param {string} id the id to include into the AJAX call
  * @returns {undefined}
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 export const loadRecipe = async function (id) {
   try {
     const data = await AJAX(`${API_URL}/${id}?key=${state.userKey}`);
     createRecipeObject(data);
+    // updates the bookmark button (обновляет вид кнопки Закладки)
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
     } else {
@@ -73,13 +75,13 @@ export const loadRecipe = async function (id) {
 };
 
 ///////////////////////////////////////////
-///////////////////////////// SEARCH RELATED FUNCTIONS ///////////////////////////
+///////////////////// SEARCH RELATED FUNCTIONS (ФУНКЦИИ ПОИСКА) ///////////////////////
 
 /**
  * sends request to the API server and then receives and stores the result (отправляет запрос на API и обрабатывает полученные данные)
  * @param {string} search_words the key words to use for the search query
  * @returns {Array} it returns an array of properly retrieved objects/recipes
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 export const loadSearchResults = async function (query) {
   try {
@@ -104,7 +106,7 @@ export const loadSearchResults = async function (query) {
  * generate pages of results for the resultsView (подготавливает данные результата поиска в постраничном формате)
  * @param {number} page_number the page that will be rendered in UI
  * @returns {Array} it returns an array with 10 objects/recipes
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 export const getSearchResultsPage = function (page = state.search.page) {
   state.search.page = page;
@@ -113,8 +115,8 @@ export const getSearchResultsPage = function (page = state.search.page) {
   return state.search.results.slice(start, end);
 };
 
-/** WITH MY ADDONS
- * changes the quantity of ingredients according to a new number of servings, and stores information about updates
+/**
+ * changes the quantity of ingredients according to a new number of servings, and stores information about updates (изменяет объемы инредиентов в зависимости от выбранного количества порций и сохраняет новые данные)
  * @param {number} number_of_servings the one set by the user
  * @returns {undefined}
  * @author Jonas Shmedtmann and Dmitriy Vnuchkov
@@ -128,8 +130,8 @@ export const updateServings = function (numServ) {
   state.recipe.servings = numServ;
 };
 
-/** MY ADDONS
- * sort the search results according to certain parameter
+/**
+ * sort the search results according to certain parameters (сортирует результаты поиска по выбранным параметрам)
  * @param {boolean} boolean depending on the pressed button, certain type of sorting is triggered
  * @returns {array} array of sorted recipes
  * @author Dmitriy Vnuchkov
@@ -137,106 +139,95 @@ export const updateServings = function (numServ) {
 export const sortResults = async function (bool) {
   try {
     const recipesToSort = state.search.results;
-    //guard clause
     if (recipesToSort.length === 0) return;
-    //page is refreshed
     state.search.page = 1;
-    //a call is made to get additional information about the recipes
+    // make an AJAX call to collect more data about the searched ingredients to later sort them (делает новый запрос в зависимости от выбранного параметра сортировки)
     const fullRecipes = await Promise.all(
       recipesToSort.map(result => {
         const data = AJAX(`${API_URL}/${result.id}?key=${state.userKey}`);
         return data;
       })
     );
-    //sorting is done and the array is returned
-    //prettier-ignore
-    state.search.results = fullRecipes.map(obj => obj.data.recipe).sort((a, b) => bool
-        ? a.cooking_time - b.cooking_time
-        : a.ingredients.length - b.ingredients.length)
-        .map(rec => {
-          return {
-            id: rec.id,
-            title: rec.title,
-            publisher: rec.publisher,
-            image: rec.image_url,
-            cookingTime: rec.cooking_time,
-            ingredients: rec.ingredients,
-            ...(rec.key && { key: rec.key }),
-          };
-        });
+    state.search.results = fullRecipes
+      .map(obj => obj.data.recipe)
+      .sort((a, b) => (bool ? a.cooking_time - b.cooking_time : a.ingredients.length - b.ingredients.length))
+      .map(rec => {
+        return {
+          id: rec.id,
+          title: rec.title,
+          publisher: rec.publisher,
+          image: rec.image_url,
+          cookingTime: rec.cooking_time,
+          ingredients: rec.ingredients,
+          ...(rec.key && { key: rec.key }),
+        };
+      });
   } catch (err) {
     throw err;
   }
 };
 
 ///////////////////////////////////////////
-///////////////////////////// FUNCTIONS FOR BOOKMARKS ///////////////////////////
+////////////////// FUNCTIONS FOR BOOKMARKS  (ФУНКЦИИ ДЛЯ ЗАКЛАДОК) ///////////////////
 
 /**
- * store bookmarks data in the localStorage
+ * store bookmarks data in the localStorage (сохраняет данные о закладках в локальном Хранилище)
  * @param {none}
  * @returns {undefined}
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 const persistBookmarks = function () {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
 };
 
 /**
- * bookmarks the displayed recipe
+ * bookmarks the displayed recipe (добавляет закладку к рецепту в главном окне)
  * @param {object} recipe the recipe that has to be bookmarked
  * @returns {undefined}
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 export const addBookmark = function (recipe) {
-  //Add bookmark
   state.bookmarks.push(recipe);
-  //Mark current recipe as bookmarked
   if (recipe.id === state.recipe.id) state.recipe.bookmarked = true;
-  //Save the bookmarks in the localStorage
   persistBookmarks();
 };
 
 /**
- * removes the bookmark from the displayed recipe
+ * removes the bookmark from the displayed recipe (снимает закладку с рецепта в главном окне)
  * @param {string} id of the displayed recipe
  * @returns {undefined}
- * @author Jonas Shmedtmann
+ * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
  */
 export const deleteBookmark = function (id) {
-  //Find index of the recipe we want to remove
   const index = state.bookmarks.findIndex(el => el.id === id);
   state.bookmarks.splice(index, 1);
-  //Mark current recipe as NOT bookmarked
   if (id === state.recipe.id) state.recipe.bookmarked = false;
-  //Save the bookmarks in the localStorage
   persistBookmarks();
 };
 
+// supporting function to remove all bookmarks from Local Storage (вспомогательная функция для очищения хранилища от инофрмации о закладках)
 const clearBookmarks = function () {
   localStorage.removeItem('bookmarks');
 };
-// clearBookmarks();
 
 ///////////////////////////////////////////
-///////////////////////////// UPLOADING A RECIPE ///////////////////////////
+/////////// UPLOADING A RECIPE (ФУНКЦИИ ДЛЯ ДОБАВЛЕНИЯ НОВОГО РЕЦЕПТА) ///////////
 
-/** WITH MY ADDONS
- * retrieves information from the submitted form, checks and organizes it, and then saves it in the API (AJAX call) and bookmarks
+/**
+ * retrieves information from the submitted form, checks and organizes it, and then saves it in the API (AJAX call) and bookmarks (выводит информацию из отправленной формы с новым рецептом, форматирует ее, и затем сохраняет в API баззе данных)
  * @param {object} new_recipe submitted by the user through the form
  * @returns {undefined}
  * @author Jonas Shmedtmann and Dmitriy Vnuchkov
  */
 export const uploadRecipe = async function (newRecipe) {
   try {
-    //all the ingredients are retrieved
+    //all the ingredients are retrieved (выводит данные об ингредиентах)
     const ingredients = Object.entries(newRecipe)
       .filter(entry => entry[0].startsWith('ingredient'))
       .map(entry => [entry[0].split('Z'), entry[1]].flat(1));
-    //and formatted
+    //and formatted (форматирует и проверяет данные)
     let counter = 1;
     const allIng = [];
-
     ingredients.forEach((entry, i) => {
       if (counter === +entry[2]) {
         if (!isFinite(entry[3]) || ingredients[i + 2][3] === '') throw new Error('Wrong ingredient format! Please, use proper format.');
@@ -248,7 +239,7 @@ export const uploadRecipe = async function (newRecipe) {
         counter++;
       }
     });
-    //proper object with the recipe is created
+    //proper object with the recipe is created (создает объект в нужном формате)
     const recipe = {
       title: newRecipe.title,
       source_url: newRecipe.sourceUrl,
@@ -258,22 +249,23 @@ export const uploadRecipe = async function (newRecipe) {
       servings: +newRecipe.servings,
       ingredients: allIng,
     };
-    //it is then stored in the API
+    //it is then stored in the API (сохраняет в API)
     const data = await AJAX(`${API_URL}?key=${state.userKey}`, recipe);
-    //formatted and stored in the state, posted
+    //formatted and stored in the state, posted (фоматирует, сохраняет в state этой сессии)
     state.recipe = createRecipeObject(data);
-    //and bookmarked
+    //and bookmarked (и создает закладку)
     addBookmark(state.recipe);
   } catch (err) {
     throw err;
   }
 };
 
-/////////////////// FUNCTION THAT IS RUN AT THE PAGE LOAD (see Controller.js) ///////////////////////
+//////////////////////////////////////////
+///////// FUNCTION TO RUN AT THE PAGE LOAD (фУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ДАННЫХ ПРИ ЗАГРУЗКЕ СТРАНИЦЫ) /////////
 
-/** WITH MY ADDONS
- * retrieves data about bookmarks. user key and the weekly plan from the localStorage
- * @param {object} recipe the recipe that has to be bookmarked
+/**
+ * retrieves data about bookmarks. user key and the weekly plan from the localStorage (выводит данные о закладках, ключе пользователя, и еженедельном меню)
+ * @param {}
  * @returns {undefined}
  * @author Jonas Shmedtmann and Dmitriy Vnuchkov
  */
@@ -288,27 +280,30 @@ export const init2 = function () {
 
 ///////////////////////////////////////////
 ///////////////////////////// CREATING A SHOPPING LIST ///////////////////////////
-/** MY ADDONS
- * retrieves ingredients with chosen quantities to display in the shopping list
+
+/**
+ *
+ * retrieves ingredients with chosen quantities to display in the shopping list (выводит данные о рецепте и порциях для создания списка продуктов)
  * @param {none}
  * @returns {array} array of strings
  * @author Dmitriy Vnuchkov
  */
 export const retrieveIngredients = function () {
   if (!state.recipe.ingredients) return;
-  //retrieve and format each ingredient
+  //retrieve and format each ingredient (выводит и форматирует каждый ингредиент)
   const arrayOfIngs = state.recipe.ingredients.map((ing, i) => {
     return `Item: ${ing.description.toUpperCase()}   ${
-      state.updatedQuantityValues[i] ? `(amount: ${state.updatedQuantityValues[i]} ${ing.unit})` : ''
+      state.updatedQuantityValues[i] ? `(amount: ${fracty(state.updatedQuantityValues[i])} ${ing.unit})` : ''
     }`;
   });
   return arrayOfIngs;
 };
 
 ///////////////////////////////////////////
-///////////////////////////// WEEKLY PLAN (CALENDAR) ///////////////////////////
-/** MY ADDONS
- * empties the chosen calendar day in the state
+///////////////////////////// WEEKLY PLAN OR CALENDAR (ЕЖЕНЕДЕЛЬНОЕ МЕНЮ) ///////////////////////////
+
+/**
+ * empties the chosen calendar day in the state (очищает выбранный день в еженедельном меню)
  * @param {number} the_day to empty in the weekly plan
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
@@ -321,10 +316,10 @@ export const emptyCalendarDay = function (chosenDay) {
   persistCalendar();
 };
 
-/** MY ADDONS
- * updates the calendar depending on the parameters
- * @param {number} number of the day in the weekly plan that has to be targeted
- * @param {object} recipe that has to be used to update the calendar
+/**
+ * updates the calendar depending on the parameters (обновляет данные календаря в зависимости от запроса)
+ * @param {number} number of the day in the weekly plan that has to be targeted (выбранный день в меню)
+ * @param {object} recipe that has to be used to update the calendar (выбранный рецепт)
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
  */
@@ -348,8 +343,8 @@ export const updateCalendarList = function (recipeDay, newRecipe = state.recipe)
   persistCalendar();
 };
 
-/** MY ADDONS
- * store weekly plan (calendar) data in the localStorage
+/**
+ * store weekly plan (calendar) data in the localStorage (сохраняет данные о еженедельном меню в локальном хранилище)
  * @param {none}
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
@@ -359,7 +354,7 @@ const persistCalendar = function () {
 };
 
 /**
- * empties the weekly plan object and the localStorage data
+ * empties the weekly plan object and the localStorage data (удаляет данные из еженедельного меню)
  * @param {none}
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
@@ -379,17 +374,17 @@ export const clearCalendar = function () {
 // clearCalendar();
 
 ///////////////////////////////////////////
-///////////////////////////// CALORIES COUNTER API ///////////////////////////
-/** MY ADDONS
- * retrieves ingredients from the recipe and gains info about them from Spoonacular, then - displays calories per serving
+///////////////////////////// CALORIES COUNTER API (API ДЛЯ ПОДСЧЕТА КАЛОРИЙ) ///////////////////////////
+
+/**
+ * retrieves ingredients from the recipe and gains info about them from Spoonacular, then - displays calories per serving (выводит данные об ингредиентах и отправляет запрос на Spoonacular API, и подсчитывает калории в одной порции)
  * @param {object} recipe to analyze in the spoonacular
  * @returns {number} number of calories per serving
  * @author Dmitriy Vnuchkov
- * @todo add the spinner while the AJAX call is made
  */
 export const apiCall = async function (recipe) {
   try {
-    //prepare the recipe for the AJAX call
+    //prepare the recipe for the AJAX call (подготавливает рецепт для запроса на стороннем API)
     const recipeToSend = {
       title: recipe.title,
       servings: recipe.servings,
@@ -398,10 +393,8 @@ export const apiCall = async function (recipe) {
       ),
       instructions: '',
     };
-    //make an AJAX call for ingredients' IDs and quantities
-    //prettier-ignore
+    //make an AJAX call for ingredients' IDs and quantities (отыскивает ингредиенты в базе данных Spoonacular)
     const data = await AJAX(`${SPOONACULAR_URL}${SPOONACULAR_KEY}`, recipeToSend);
-    //retrieve ingredients' IDs
     const ings = data.extendedIngredients.map(ing => {
       return {
         id: ing.id,
@@ -409,8 +402,7 @@ export const apiCall = async function (recipe) {
         units: ing.measures.metric.unitLong,
       };
     });
-
-    //make an AJAX call to get info about ingredients
+    //make an AJAX call to get info about ingredients (запрашивает данные об ингредиентах)
     const ingredientData = await Promise.all(
       ings.map(ing => {
         if (ing.id) {
@@ -419,12 +411,10 @@ export const apiCall = async function (recipe) {
         }
       })
     );
-    //count total calories for all servings
-    //prettier-ignore
+    //count total calories for all servings (подсчитывает примерный объем калорий в одной порции)
     const calories = ingredientData
-      .map(ingredient => ingredient.nutrition.nutrients.find(obj => obj.title === 'Calories'))
+      .map(ingredient => ingredient.nutrition.nutrients.find(obj => obj.name === 'Calories'))
       .reduce((total, calories) => (total += calories.amount), 0);
-    //count the calories per serving
     return Math.ceil(calories / recipe.servings);
   } catch (err) {
     throw err;
@@ -432,7 +422,7 @@ export const apiCall = async function (recipe) {
 };
 
 /**
- * checks the key and stores it, updates bookmarks and the storage, if necessary
+ * checks the key and stores it, updates bookmarks and the storage, if necessary (проверяет ключ и добавляет его в локальное хранилище)
  * @param {string} key entered by the user
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
@@ -445,7 +435,7 @@ export const saveNewKey = function (newKey) {
 };
 
 /**
- * deletes the key from the app memory and cleans up bookmarks list
+ * deletes the key from the app memory and cleans up bookmarks list (удаляет старый ключ и закладки)
  * @param {none}
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
@@ -457,6 +447,7 @@ export const deleteKey = function () {
   persistKey();
 };
 
+// saves the API key (сохраняет API ключ)
 const persistKey = function () {
   localStorage.setItem('key', JSON.stringify(state.userKey));
 };

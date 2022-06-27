@@ -32,11 +32,7 @@ class ExtraView extends View {
     document.body.addEventListener(
       'keydown',
       function (e) {
-        if (
-          e.key === 'Escape' &&
-          !this._parentElement.classList.contains('hidden')
-        )
-          this._toggleWindow();
+        if (e.key === 'Escape' && !this._parentElement.classList.contains('hidden')) this._toggleWindow();
       }.bind(this)
     );
   }
@@ -64,6 +60,7 @@ class ExtraView extends View {
   }
 
   renderShoppingList(data) {
+    console.log(data);
     const fullList = data.map(item => `<span>${item}</span><br />`);
     this._shoppingList.innerHTML = `<div>${fullList.join('')}</div>`;
   }
@@ -106,10 +103,7 @@ class ExtraView extends View {
       modalWindow.style.left = modalWindow.offsetLeft - pos1 + 'px';
       if (modalWindow.offsetTop - pos2 < 0) modalWindow.style.top = 0 + 'px';
       if (modalWindow.offsetLeft - pos1 < 0) modalWindow.style.left = 0 + 'px';
-      if (
-        modalWindow.offsetLeft - pos1 >
-        maxWidth - modalWindow.offsetWidth / 2
-      )
+      if (modalWindow.offsetLeft - pos1 > maxWidth - modalWindow.offsetWidth / 2)
         modalWindow.style.left = maxWidth - modalWindow.offsetWidth / 2 + 'px';
       //prettier-ignore
       if (modalWindow.offsetTop - pos2 >maxHeight - modalWindow.offsetHeight / 2)
