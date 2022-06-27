@@ -1,20 +1,18 @@
 import { async } from 'regenerator-runtime';
-//prettier-ignore
-import { API_URL, RES_PER_PAGE, SPOONACULAR_KEY, SPOONACULAR_URL, } from './config.js';
+import { API_URL, RES_PER_PAGE, SPOONACULAR_KEY, SPOONACULAR_URL } from './config.js';
 import { AJAX } from './helpers.js';
 
 export const state = {
   recipe: {},
-  updatedQuantityValues: [], //MY ADDONS: this arrays stores info about ingredients quantity for the Shopping list
+  updatedQuantityValues: [],
   search: {
     query: '',
     results: [],
-    sortedResults: [], //MY ADDONS: this array stores sorted results
+    sortedResults: [],
     page: 1,
     resultsPerPage: RES_PER_PAGE,
   },
   bookmarks: [],
-  //MY ADDONS: this arrays of objects stores information about recipes for the weekly plan
   calendarList: [
     { day: 1, recipe: {} },
     { day: 2, recipe: {} },
@@ -30,8 +28,8 @@ export const state = {
 ///////////////////////////////////////////
 ///////////////////////////// MAIN RECIPE FUNCTIONS ///////////////////////////
 
-/** WITH MY ADDONS
- * format the received data into the format comfortable for our application
+/**
+ * format the received data into the format comfortable for our application (изменят полученные данные в формат удобный для приложения)
  * @param {Object} data the object with recipe data
  * @returns {Object} recipe in the proper format
  * @author Jonas Shmedtmann and Dmitriy Vnuchkov
@@ -50,12 +48,12 @@ const createRecipeObject = function (data) {
     servings: recipe.servings,
     cookingTime: recipe.cooking_time,
     ingredients: recipe.ingredients,
-    ...(recipe.key && { key: recipe.key }), // && operator is short circuiting... means if there is no recipe.key, it will return nothing... however, if there is one, then it will create a parameter key... and we just need to spread it...
+    ...(recipe.key && { key: recipe.key }),
   });
 };
 
 /**
- * send an AJAX call to get recipe data from the API
+ * send an AJAX call to get recipe data from the API (отправляет AJAX запрос чтобы получить данные с API)
  * @param {string} id the id to include into the AJAX call
  * @returns {undefined}
  * @author Jonas Shmedtmann
@@ -63,16 +61,13 @@ const createRecipeObject = function (data) {
 export const loadRecipe = async function (id) {
   try {
     const data = await AJAX(`${API_URL}/${id}?key=${state.userKey}`);
-    //create a proper object for the app
     createRecipeObject(data);
-    //we do not only identify whether the recipe is bookmarked or not... we also add a property 'bookmarked'
     if (state.bookmarks.some(bookmark => bookmark.id === id)) {
       state.recipe.bookmarked = true;
     } else {
       state.recipe.bookmarked = false;
     }
   } catch (err) {
-    //we do not handle the error here, but re-throw it further so that it would be handled in the controller.js
     throw err;
   }
 };
@@ -81,7 +76,7 @@ export const loadRecipe = async function (id) {
 ///////////////////////////// SEARCH RELATED FUNCTIONS ///////////////////////////
 
 /**
- * sends request to the API server and then receives and stores the result
+ * sends request to the API server and then receives and stores the result (отправляет запрос на API и обрабатывает полученные данные)
  * @param {string} search_words the key words to use for the search query
  * @returns {Array} it returns an array of properly retrieved objects/recipes
  * @author Jonas Shmedtmann
@@ -90,7 +85,6 @@ export const loadSearchResults = async function (query) {
   try {
     state.search.query = query;
     const data = await AJAX(`${API_URL}?search=${query}&key=${state.userKey}`);
-
     state.search.results = data.data.recipes.map(rec => {
       return {
         id: rec.id,
@@ -102,21 +96,18 @@ export const loadSearchResults = async function (query) {
     });
     state.search.page = 1;
   } catch (err) {
-    console.error(`${err} OUR>ERROR`);
     throw err;
   }
 };
 
 /**
- * generate pages of results for the resultsView
+ * generate pages of results for the resultsView (подготавливает данные результата поиска в постраничном формате)
  * @param {number} page_number the page that will be rendered in UI
  * @returns {Array} it returns an array with 10 objects/recipes
  * @author Jonas Shmedtmann
  */
 export const getSearchResultsPage = function (page = state.search.page) {
-  //first store the page
   state.search.page = page;
-  //the math below makes the slice method cut out exactly ten recipes depending on the page number (if page 1: from 0 to 9, means first 10 in the array)
   const start = (page - 1) * state.search.resultsPerPage;
   const end = page * state.search.resultsPerPage;
   return state.search.results.slice(start, end);
@@ -248,10 +239,7 @@ export const uploadRecipe = async function (newRecipe) {
 
     ingredients.forEach((entry, i) => {
       if (counter === +entry[2]) {
-        if (!isFinite(entry[3]) || ingredients[i + 2][3] === '')
-          throw new Error(
-            'Wrong ingredient format! Please, use proper format.'
-          );
+        if (!isFinite(entry[3]) || ingredients[i + 2][3] === '') throw new Error('Wrong ingredient format! Please, use proper format.');
         allIng.push({
           quantity: +entry[3],
           unit: ingredients[i + 1][3].trim(),
@@ -311,9 +299,7 @@ export const retrieveIngredients = function () {
   //retrieve and format each ingredient
   const arrayOfIngs = state.recipe.ingredients.map((ing, i) => {
     return `Item: ${ing.description.toUpperCase()}   ${
-      state.updatedQuantityValues[i]
-        ? `(amount: ${state.updatedQuantityValues[i]} ${ing.unit})`
-        : ''
+      state.updatedQuantityValues[i] ? `(amount: ${state.updatedQuantityValues[i]} ${ing.unit})` : ''
     }`;
   });
   return arrayOfIngs;
@@ -342,18 +328,12 @@ export const emptyCalendarDay = function (chosenDay) {
  * @returns {undefined}
  * @author Dmitriy Vnuchkov
  */
-export const updateCalendarList = function (
-  recipeDay,
-  newRecipe = state.recipe
-) {
+export const updateCalendarList = function (recipeDay, newRecipe = state.recipe) {
   if (Object.keys(newRecipe).length === 0) return;
   if (Object.keys(newRecipe).length === 2) {
     state.calendarList.splice(newRecipe.day - 1, 1, {
       day: newRecipe.day,
-      recipe:
-        Object.keys(state.calendarList[recipeDay - 1].recipe).length > 0
-          ? state.calendarList[recipeDay - 1].recipe
-          : {},
+      recipe: Object.keys(state.calendarList[recipeDay - 1].recipe).length > 0 ? state.calendarList[recipeDay - 1].recipe : {},
     });
     state.calendarList.splice(recipeDay - 1, 1, {
       day: recipeDay,
@@ -414,13 +394,7 @@ export const apiCall = async function (recipe) {
       title: recipe.title,
       servings: recipe.servings,
       ingredients: recipe.ingredients.map(ing =>
-        `${
-          ing.quantity !== null
-            ? `${ing.quantity} ${ing.unit} of `
-            : `1 ${ing.unit} of `
-        } ${ing.description}`
-          .replaceAll('  ', ' ')
-          .trim()
+        `${ing.quantity !== null ? `${ing.quantity} ${ing.unit} of ` : `1 ${ing.unit} of `} ${ing.description}`.replaceAll('  ', ' ').trim()
       ),
       instructions: '',
     };
@@ -440,9 +414,7 @@ export const apiCall = async function (recipe) {
     const ingredientData = await Promise.all(
       ings.map(ing => {
         if (ing.id) {
-          const data = AJAX(
-            `https://api.spoonacular.com/food/ingredients/${ing.id}/information?amount=${ing.amount}&${SPOONACULAR_KEY}`
-          );
+          const data = AJAX(`https://api.spoonacular.com/food/ingredients/${ing.id}/information?amount=${ing.amount}&${SPOONACULAR_KEY}`);
           return data;
         }
       })
