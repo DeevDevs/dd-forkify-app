@@ -57,7 +57,7 @@ const createRecipeObject = function (data) {
  * send an AJAX call to get recipe data from the API (отправляет AJAX запрос чтобы получить данные с API)
  * @param {string} id the id to include into the AJAX call
  * @returns {undefined}
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 export const loadRecipe = async function (id) {
   try {
@@ -81,7 +81,7 @@ export const loadRecipe = async function (id) {
  * sends request to the API server and then receives and stores the result (отправляет запрос на API и обрабатывает полученные данные)
  * @param {string} search_words the key words to use for the search query
  * @returns {Array} it returns an array of properly retrieved objects/recipes
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 export const loadSearchResults = async function (query) {
   try {
@@ -106,7 +106,7 @@ export const loadSearchResults = async function (query) {
  * generate pages of results for the resultsView (подготавливает данные результата поиска в постраничном формате)
  * @param {number} page_number the page that will be rendered in UI
  * @returns {Array} it returns an array with 10 objects/recipes
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 export const getSearchResultsPage = function (page = state.search.page) {
   state.search.page = page;
@@ -174,7 +174,7 @@ export const sortResults = async function (bool) {
  * store bookmarks data in the localStorage (сохраняет данные о закладках в локальном Хранилище)
  * @param {none}
  * @returns {undefined}
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 const persistBookmarks = function () {
   localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
@@ -184,7 +184,7 @@ const persistBookmarks = function () {
  * bookmarks the displayed recipe (добавляет закладку к рецепту в главном окне)
  * @param {object} recipe the recipe that has to be bookmarked
  * @returns {undefined}
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 export const addBookmark = function (recipe) {
   state.bookmarks.push(recipe);
@@ -196,7 +196,7 @@ export const addBookmark = function (recipe) {
  * removes the bookmark from the displayed recipe (снимает закладку с рецепта в главном окне)
  * @param {string} id of the displayed recipe
  * @returns {undefined}
- * @author Dmitriy Vnuchkov (original idea by Jonas Shmedtmann)
+ * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
  */
 export const deleteBookmark = function (id) {
   const index = state.bookmarks.findIndex(el => el.id === id);
