@@ -63,10 +63,12 @@ const controlSearchResults = async function () {
     //3 Render results (отображает результаты запроса)
     ResultsView.render(model.getSearchResultsPage());
     //4 Show buttons (выводит кнопки управления списками)
-    ResultsView.showSortingBtns();
+    console.log(model.state.search.results);
+    ResultsView.showSortingBtns(model.state.search.results);
     //5 Render page buttons (выводит кнопки смены страниц с результатам поиска)
     PaginationView.render(model.state.search);
   } catch (err) {
+    ResultsView.showSortingBtns(model.state.search.results);
     ResultsView.renderError(err.message);
   }
 };

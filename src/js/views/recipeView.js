@@ -2,27 +2,23 @@ import View from './View.js';
 import icons from 'url:../../img/icons.svg';
 import fracty from 'fracty';
 
+// this is an extension of the View class. It is responsible for the main window with the recipe details (Это расширение класса View, ответственное за отображение контента в основном окне с деталями рецептов)
 class RecipeView extends View {
   _parentElement = document.querySelector('.recipe');
-  //here we create a message that will be shown as error by default
   _errorMessage = `We could not find the recipe. Please, try to find another one!`;
-  //and here is a message that we use for success (or for showing the default suggestion to go and search for the recipe)
   _successMessage = ``;
-
-  //////////////////////////////// MY ADDONS /////////////////////////////////
   _ghostElement;
   _btnCalendar = document.querySelector('.btn-add-to-calendar');
 
   constructor() {
     super();
-    //add listeners to the main recipe window to allow dragged elements and make it draggable
+    //add listeners to the main recipe window to allow dragged elements and make it draggable (добавляет приемники событий к основному рецепту чтобы активировать перетаскивание)
     this.addHandlerDraggable();
     this.addHandlerDragEnd();
-    this.addHandlerDraggedOver(); //TESTING
+    this.addHandlerDraggedOver();
   }
-  ///////////////////////////////////////
 
-  //see Controller.js ... it triggers rendering in the main recipe window
+  // it triggers rendering in the main recipe window (запускает смену рецепта в основном окне)
   addHandlerRender(handler) {
     ['hashchange', 'load'].forEach(ev => window.addEventListener(ev, handler));
   }

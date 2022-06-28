@@ -1,88 +1,85 @@
-//here we create the View class which is used as a parent for other views. Functions inside the View class are unified to the same variables (which are unique for each child class)
-import 'regenerator-runtime/runtime'; // it is for polyfilling async await
-import 'core-js/stable'; // it is for polyfilling everything else
+import 'regenerator-runtime/runtime';
+import 'core-js/stable';
 import icons from 'url:../../img/icons.svg';
 import { async } from 'regenerator-runtime';
 
+//here we create the View class which is used as a parent for other views. Functions inside the View class are unified to the same variables (which end up being unique for each child class). Тут мы создаем View класс, который является родителем других view классов. Функции внутри этого класса будут доступны и другим классам, и будут работать с уникальными для классов-детей значениями.
 export default class View {
   _data;
 
   /**
-   * Render the received object to the DOM
-   * @param {Object | Object[]} data The data to be rendered (e.g. recipe)
+   * Render the received object to the DOM (рендерит полученные данные)
+   * @param {Object | Array} data The data to be rendered (e.g. recipe)
    * @param {boolean} [render=true] If false, creates markup string instead of rendering to the DOM
    * @returns {undefined | string} A markup is returned if render is false
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   render(data, render = true) {
-    //guard clause here
     if (!data || (Array.isArray(data) && data.length === 0)) {
       return this.renderError();
     }
-    //store the data
+    //store the data (сохраняем данные)
     this._data = data;
-    //we store new html code that comes from the generateMarkup (which in turn is based on the #data)
+    //we store new html code that comes from the generateMarkup (which in turn is based on the #data) (сохраняем HTML элементы созданные на базе сохраненных данных)
     const markup = this._generateMarkup();
-    //markup is returned, if we do not want to render it
+    //markup is returned, if we do not want to render it (возвращаем HTMl-элементы, если не хотим рендерить их)
     if (!render) return markup;
-    //empty the container first
+    //empty the container first (опустошаем выбранный контейнер)
     this._clear();
-    //and now we add html code to the container
+    //and now we add html code to the container (добавляем созданный html в очищенный контейнер)
     this._parentElement.insertAdjacentHTML('afterbegin', markup);
   }
 
   /**
-   * update servings details (when number of servings is changed)... also, we use it in resultsView to make selected recipe remain highlighted...the idea is that this time we do not update the entire list, but rather just update those that were changed after user's manipulation
-   * @param {Object | Object[]} data The data to be updated (e.g. recipe)
+   * update HTML content instead of deleting/rendering it again (обновляет HTML контент вместо того, чтобы перезаписывать его полностью)
+   * @param {Object | Array} data The data to be updated (e.g. recipe)
    * @returns {none}
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   update(data) {
-    //store the data
+    //store the data (сохраняет данные)
     this._data = data;
-    //create new markup based on the old one
+    //create new markup based on the old one (создает HTML на базе новых данных)
     const newMarkup = this._generateMarkup();
-    //use a method that will form a DOM element
+    //use a method that will form a DOM element (воссоздает DOM-элемент в воображаемом контексте)
     const newDOM = document.createRange().createContextualFragment(newMarkup);
-    //address the elements there, and they will not be parts of a string, but rather individual DOM elements... with this star we select all the elements that exist in the chosen parent element
-    const newElements = Array.from(newDOM.querySelectorAll('*')); // originally, it is a nodeList, so we have to convert it into an array
-    const curElements = Array.from(this._parentElement.querySelectorAll('*')); // originally, it is a nodeList, so we have to convert it into an array
-    //and now we can start the actual comparison...
+    //turn all elements in the new DOM into a nodelist that is then turned into an array (превращает воссозданные DOM элементы в нодлист, который затем трансформирует в массив)
+    const newElements = Array.from(newDOM.querySelectorAll('*'));
+    // turn all elements in the already existing and rendered DOM content into the nodelist,and then array (превращает уже отображаемый DOM контент в нодлист, и затем в массив)
+    const curElements = Array.from(this._parentElement.querySelectorAll('*'));
+    //and now we can start the actual comparison (и начинает сравнение)
     newElements.forEach((newEl, i) => {
       const curEl = curElements[i];
-      //compare elements with each other and check if the content in the nodes is the same... OVERALL, we only update changed textContent here
-      //prettier-ignore
+      //compare elements with each other and check if the content in the nodes is the same. Overall, we only update changed textContent here (сравнивает старые элементы с новыми и обновляет только тот контент, который пережил изменения)
       if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== '') {
-        curEl.textContent = newEl.textContent; //So, we change the text, BUT we do not change the attributes yet
+        curEl.textContent = newEl.textContent; // here we change the text (тут мы обновляет текстовый контент)
       }
-      //and here we update changed attributes... we do it to update dataset in html elements, etc...
+      //and here we update changed attributes (тут мы обновляем атрибуты)
       if (!newEl.isEqualNode(curEl)) {
-        Array.from(newEl.attributes).forEach(attr =>
-          curEl.setAttribute(attr.name, attr.value)
-        );
+        Array.from(newEl.attributes).forEach(attr => curEl.setAttribute(attr.name, attr.value));
       }
     });
   }
 
   /**
-   * clear the element where data will be rendered
+   * clear the element where data will be rendered (опустошаем элемент, в котором будем рендерить новый контент)
    * @param {none}
    * @returns {none}
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   _clear() {
     this._parentElement.innerHTML = '';
   }
 
   /**
-   * create and add the spinner element to spin while data is loading
+   * create and add the spinner element to spin while data is loading (рендерит спиннер загрузки)
    * @param {none}
    * @returns {none}
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   renderSpinner() {
     const markup = `
@@ -97,11 +94,11 @@ export default class View {
   }
 
   /**
-   * rendering error messages
+   * rendering error messages (рендерит сообщения об ошибке)
    * @param {none}
    * @returns {none}
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   renderError(message = this._errorMessage) {
     const markup = `
@@ -119,11 +116,11 @@ export default class View {
   }
 
   /**
-   * rendering success messages
+   * rendering success messages (рендерит сообщения об успешном проведении операции)
    * @param {none}
    * @returns {none}
    * @this {Object} View instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   renderMessage(message = this._successMessage) {
     const markup = `

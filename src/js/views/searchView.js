@@ -1,3 +1,4 @@
+// this class is responsible for the search functionality. It is the only class that is not built on the basis of parent View (этот класс отвечает за функциональность поля поиска. Это единственный класс который создан не на базе родителя View)
 class SearchView {
   _parentEl = document.querySelector('.search');
   getQuery() {
@@ -6,14 +7,25 @@ class SearchView {
     return query;
   }
 
-  //empties the search input field
+  /**
+   * empties the search input field (опутошает поле для поиска)
+   * @param {none}
+   * @returns {none}
+   * @this {Object} Search View instance
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
+   */
   _clearInput() {
     this._parentEl.querySelector('.search__field').value = '';
   }
 
-  // see controller.js ..  triggers function that initiates the search process
+  /**
+   * trigger search functions (запускает функции поиска рецептов)
+   * @param {none}
+   * @returns {none}
+   * @this {Object} View instance
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
+   */
   addHandlerSearch(handler) {
-    //we make the entire form a listener because then it will even listen to the enter button
     this._parentEl.addEventListener('submit', function (e) {
       e.preventDefault();
       handler();
