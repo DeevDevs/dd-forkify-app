@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta property="og:title" content="Forkify - Collection of Recipes" />
+    <!-- prettier-ignore -->
+    <meta property="og:image" content="https://i.ibb.co/8sFDSWZ/forkify-preview.png" />
+    <!-- prettier-ignore -->
+    <meta property="og:description" content="A good friend of a talented cook. Feel the diversity of the world cuisine by trying nw recipes, and diversify it by adding your masterpieces." />
+    <meta property="og:url" content="https://deevdevs-forkify-app.netlify.app/" />
+    <meta property="og:image:alt" content="Preview of the application" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,600,700" rel="stylesheet" />
     <link rel="shortcut icon" href="src/img/favicon.png" type="image/x-icon" />
 
     <link rel="stylesheet" href="src/sass/main.scss" />
@@ -21,11 +29,7 @@
       <header class="header">
         <img src="src/img/logo.png" alt="Logo" class="header__logo" />
         <form class="search">
-          <input
-            type="text"
-            class="search__field"
-            placeholder="Search over 1,000,000 recipes..."
-          />
+          <input type="text" class="search__field" placeholder="Search over 1,000,000 recipes..." />
           <button class="btn search__btn">
             <svg class="search__icon">
               <use href="src/img/icons.svg#icon-search"></use>
@@ -69,9 +73,7 @@
                         <use href="src/img/icons.svg#icon-smile"></use>
                       </svg>
                     </div>
-                    <p>
-                      No bookmarks yet. Find a nice recipe and bookmark it :)
-                    </p>
+                    <p>No bookmarks yet. Find a nice recipe and bookmark it :)</p>
                   </div>
 
                   <!-- <li class="preview">
@@ -95,12 +97,8 @@
       </header>
       <div class="search-results">
         <div class="buttons__box">
-          <button class="btn__extra btn--sort--time hidden">
-            Sort by Time
-          </button>
-          <button class="btn__extra btn--sort--ings hidden">
-            Sort by Ingredients
-          </button>
+          <button class="btn__extra btn--sort--time hidden">Sort by Time</button>
+          <button class="btn__extra btn--sort--ings hidden">Sort by Ingredients</button>
         </div>
 
         <div>
@@ -144,14 +142,8 @@
 
         <p class="copyright">
           &copy; Copyright by
-          <a
-            class="twitter-link"
-            target="_blank"
-            href="https://twitter.com/jonasschmedtman"
-            >Jonas Schmedtmann</a
-          >
-          . Use for learning or your portfolio. Don't use to teach. Don't claim
-          as your own. (Add-ons by Dmitriy Vnuchkov)
+          <a class="twitter-link" target="_blank" href="https://twitter.com/jonasschmedtman">Jonas Schmedtmann</a>
+          . Use for learning or your portfolio. Don't use to teach. Don't claim as your own. (Add-ons by Dmitriy Vnuchkov)
         </p>
       </div>
       <div class="recipe" draggable="true">
@@ -363,9 +355,7 @@
       </form>
       <div class="upload__buttons">
         <button class="btn btn__extra btn--add--ing">Add Ingredient</button>
-        <button class="btn btn__extra btn--remove--ing">
-          Remove Ingredient
-        </button>
+        <button class="btn btn__extra btn--remove--ing">Remove Ingredient</button>
       </div>
     </div>
 
@@ -375,27 +365,19 @@
       <div class="rightSide">
         <div class="buttons__box">
           <button class="btn__extra btn--api--use">Count Calories</button>
-          <button class="btn__extra btn--shop--list">
-            Create Shopping List
-          </button>
-          <button class="btn__extra btn--empty--calendar">
-            Empty Weekly Plan
-          </button>
+          <button class="btn__extra btn--shop--list">Create Shopping List</button>
+          <button class="btn__extra btn--empty--calendar">Empty Weekly Plan</button>
         </div>
         <div class="shopcal">Calories Counter</div>
-        <div class="calories__api">
-          Here you will see the approximate number of calories per serving.
-        </div>
+        <div class="calories__api">Here you will see the approximate number of calories per serving.</div>
         <div class="shopcal">Shopping List</div>
         <div class="shopping__list">Empty List</div>
       </div>
       <div class="leftSide">
         <div class="calendar--name">ONE WEEK PLAN</div>
         <div class="plan__desc">
-          You can drag recipes from the main recipe window and drop them to the
-          weekly plan. You can drag recipes from the plan to the main recipe
-          window to display them. Also, you can doubleclick recipes in this plan
-          to see additional functions.
+          You can drag recipes from the main recipe window and drop them to the weekly plan. You can drag recipes from the plan to the main
+          recipe window to display them. Also, you can doubleclick recipes in this plan to see additional functions.
         </div>
         <div class="calendar">
           <!--  <div class="calendar__day calendar--name" draggable="true" data-day="1"><span class="calendar--name">Day 1</span></div>
