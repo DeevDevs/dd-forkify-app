@@ -1,18 +1,15 @@
 import View from './View.js';
 
-///////////////// MY ADDONS ////////////////
+// this is an extension of the View class that is responsible for the weekly plan functionality. (Это расширение класса View, которое отвечает за функциональность еженедельного меню)
 class CalendarView extends View {
   _parentElement = document.querySelector('.calendar');
   _errorMessage = `We could not find the recipe ! Please, open the recipe that you want to add.`;
   _floatingButtons = document.querySelector('.floating__buttons');
   _calendarDays = document.querySelectorAll('.calendar__day');
-
   _btnCalendar = document.querySelector('.btn-add-to-calendar');
   _btnEmptyDay = document.querySelector('.btn--empty--day');
   _btnEmptyCalendar = document.querySelector('.btn--empty--calendar');
-  //a ghost element is stored here (instead of just dragging the ghost image of the main window recipe)
   _ghostElement;
-  // variables used for calendar settings and manipulations
   _curRecipe;
   _activeRecipe = false;
   _draggedOverDay = false;
@@ -25,16 +22,11 @@ class CalendarView extends View {
     this.addHandlerDraggedTo();
     this.addHandlerDraggableCalendarDays();
   }
-
-  ///////////////////////////////////////
-  //////////////////////// ADDING EVENT LISTENERS ////////////////////////
-
-  //see Controller.js... the handler function retrieves data from the browser memory and renders the weekly calendar
   renderCalendarAtStart(handler) {
     window.addEventListener('load', handler);
   }
 
-  //see Controller.js... the handler function adds the recipe to the weekly calendar
+  // triggers adding the recipe to the weekly plan (запускает добавление рецепта в еженедельное меню)
   addHandlerAddToCalendar(handler) {
     this._btnCalendar.addEventListener(
       'click',
@@ -46,7 +38,7 @@ class CalendarView extends View {
     );
   }
 
-  //see Controller.js... the handler function removes the recipe from a certain day in the weekly calendar
+  // triggers removing the recipe from the weekly plan (запускает удаление рецепта из еженедельного меню)
   addHandlerEmptyCalendarDay(handler) {
     this._btnEmptyDay.addEventListener(
       'click',
@@ -59,16 +51,13 @@ class CalendarView extends View {
     );
   }
 
-  //see Controller.js... the handler function empties all days in the weekly calendar
+  // triggers emptying all days in the weekly calendar (запускает удаление всех рецептов из еженедельного меню)
   addHandlerEmptyCalendar(handler) {
     this._btnEmptyCalendar.addEventListener('click', handler);
   }
 
-  ///////////////////////////////////////
-  //////////////////////// SELECTION AND DESELECTION FUNCTIONS ////////////////////////
-
   /**
-   * highlights the recipe that the user selects with dblclick, and removes the selection in certain conditions
+   * highlights the recipe that the user selects with dblclick, and removes the selection in certain conditions (выделяет рецепт после двойного клика, и убирает выделение в определенных условиях)
    * @param {none} none
    * @returns {undefined}
    * @this {Object} CalendarView instanse
@@ -80,19 +69,15 @@ class CalendarView extends View {
       function (e) {
         if (!e.target.closest('.calendar__day')) return;
 
-        //changes the BG color of all days
-        this._parentElement
-          .querySelectorAll('.calendar__day')
-          .forEach(day => (day.style.backgroundColor = '#f9f5f3'));
+        //changes the BG color of all days (изменяет цвет всех превью рецептов в меню)
+        this._parentElement.querySelectorAll('.calendar__day').forEach(day => (day.style.backgroundColor = '#f9f5f3'));
 
-        //checks if the last selected day (outside variable) is the same as the newly selected and, if so - deselects everything
-        if (
-          this._curRecipe === +e.target.closest('.calendar__day').dataset.day
-        ) {
+        //checks if the last selected day is the same as the newly selected and, if so - deselects everything (проверяет последний выделенный рецепт, и если это тот же что и новый - отменяет выделение)
+        if (this._curRecipe === +e.target.closest('.calendar__day').dataset.day) {
           this.hideFloatingButtons();
           this.defaultCalendarParameters();
         } else {
-          //if not, it highlights the chosen day, determines its current location and lets the buttons appear next to it
+          //if not, it highlights the chosen day, determines its current location and lets the buttons appear next to it (а если это другой рецепт, определяет его и выводит кнопки управления)
           const mousePosition = this.countMousePosition(e);
           this._floatingButtons.style.left = mousePosition[0];
           this._floatingButtons.style.top = mousePosition[1];
@@ -105,19 +90,15 @@ class CalendarView extends View {
         }
       }.bind(this)
     );
-
     document.body.addEventListener(
       'click',
       function (e) {
-        //checks if the clicked target is not a previously selected day and if any selection is currently ON, and deselects everything, if conditions are met
+        // removes selection and buttons in certain conditions (снимает выделене и прячет кнопки управления в нужных условиях)
         if (
           !e.target.closest('.calendar__day') ||
-          (e.target.closest('.calendar__day').dataset.day !== this._curRecipe &&
-            this._activeRecipe === true)
+          (e.target.closest('.calendar__day').dataset.day !== this._curRecipe && this._activeRecipe === true)
         ) {
-          this._parentElement
-            .querySelectorAll('.calendar__day')
-            .forEach(day => (day.style.backgroundColor = '#f9f5f3'));
+          this._parentElement.querySelectorAll('.calendar__day').forEach(day => (day.style.backgroundColor = '#f9f5f3'));
           this.hideFloatingButtons();
           this.defaultCalendarParameters();
         }
@@ -125,13 +106,7 @@ class CalendarView extends View {
     );
   }
 
-  /**
-   * highlights the recipe that the user selects with dblclick, and removes the selection in certain conditions
-   * @param {none} none
-   * @returns {Object[]} array with click coordinates
-   * @this {Object} CalendarView instanse
-   * @author Dmitriy Vnuchkov
-   */
+  // determines mouse position (определяет местоположение курсора)
   countMousePosition(e) {
     const parentPosition = document.body.getBoundingClientRect();
     const mouseCurX = e.clientX - parentPosition.left;
@@ -139,39 +114,32 @@ class CalendarView extends View {
     return [mouseCurX + 'px', mouseCurY + 'px'];
   }
 
-  //hides the buttons after certain commands
+  //hides the buttons (прячет кнопки управления)
   hideFloatingButtons() {
     this._floatingButtons.classList.add('hidden');
     this._floatingButtons.style.display = 'none';
   }
 
-  //returns weekly plan day selection settings to default conditions
+  //returns weekly plan day selection settings to default conditions (возвращает настройки и параметры меню к изначальным)
   defaultCalendarParameters() {
     this._activeRecipe = false;
     this._curRecipe = '';
   }
 
-  ///////////////////////////////////////
-  //////////////////////// HTML CODE GENERATING FUNCTIONS ////////////////////////
-
-  //uses data and a function that generates HTML code to then combine it for rendering
+  //uses data and a function that generates HTML code to then combine it for rendering (объединяет HTML контент для создания рецептов в меню)
   _generateMarkup() {
-    return this._data
-      .map(day => this._generateCalendarRecipeMarkup(day))
-      .join('');
+    return this._data.map(day => this._generateCalendarRecipeMarkup(day)).join('');
   }
 
   /**
-   * generates HTML code on every instance of an object in the array
-   * @param {Object[]} array an array of objects that represent weekly plan days
+   * generates HTML code for one recipe (генерирует HTML код для одного рецепта)
+   * @param {Object}
    * @returns {string} HTML element
    * @author Dmitriy Vnuchkov
    */
   _generateCalendarRecipeMarkup(data) {
     return `
-          <div class="calendar__day calendar--name" draggable="true" data-day="${
-            data.day
-          }">
+          <div class="calendar__day calendar--name" draggable="true" data-day="${data.day}">
           <span class="calendar--name">Day ${data.day}</span>
           ${
             Object.keys(data.recipe).length !== 0
@@ -190,13 +158,7 @@ class CalendarView extends View {
           </div>`;
   }
 
-  /**
-   * generates HTML code on every instance of an object in the array
-   * @param {none} none
-   * @returns {string} HTML element
-   * @this {Object} CalendarView instanse
-   * @author Dmitriy Vnuchkov
-   */
+  // generates empty weekly plan HTML (создает пустое еженедельное меню)
   defaultCalendar() {
     return (this._parentElement.innerHTML = `
             <div class="calendar__day calendar--name" draggable="true" data-day="1"><span class="calendar--name">Day 1</span></div>
@@ -213,7 +175,7 @@ class CalendarView extends View {
   //////////////////////// DRAG AND DROP FUNCTIONS ////////////////////////
 
   /**
-   * changes the view of the calendar day once it is dragged over, and returns its initial features when the dragover is over
+   * changes the view of the calendar day once it is dragged over, and returns its initial features when the dragover is over (изменяет вид еженедельного меню при перетаскивании, и возвращает вид, когда перетаскивание закончилось)
    * @param {none}
    * @returns {undefined}
    * @this {Object} CalendarView instanse
@@ -224,7 +186,7 @@ class CalendarView extends View {
       'dragover',
       function (e) {
         e.preventDefault();
-        //if dragging over the calendar day finishes, its HTML and BG colors are restored
+        //if dragging over the calendar day finishes, its HTML and BG colors are restored (если поле для пере)
         if (!e.target.closest('.calendar__day')) {
           if (this._draggedOverDay) {
             this._draggedOverDay.innerHTML = this._lastDraggedOverDayInnerHTML;
@@ -233,7 +195,7 @@ class CalendarView extends View {
           }
           this._switch = true;
         }
-        //if the calendar day is dragged over, its HTML is stored outside while its innerHTML changes
+        //if the calendar day is dragged over, its HTML is stored outside while its innerHTML changes (если перетаскивание находится над конкретным днем в меню, контент этого дня сохраняется отдельно на случай отмены перетаскивания)
         if (e.target.closest('.calendar__day')) {
           if (this._switch === true) {
             this._draggedOverDay = e.target.closest('.calendar__day');
@@ -247,13 +209,7 @@ class CalendarView extends View {
     );
   }
 
-  /**
-   * adds listener to the DOM element that receives data, once it is dropped after dragging and transfers it to the handler
-   * @param {function} controller.controlAddDraggedRecipe the function that checks and renders the received data
-   * @returns {undefined}
-   * @this {Object} CalendarView instanse
-   * @author Dmitriy Vnuchkov
-   */
+  // triggers data processing once it is dropped (запускает обратотку данных в момент активированного перетаскивания)
   addHandlerDropTo(handler) {
     this._parentElement.addEventListener('drop', function (e) {
       e.preventDefault();
@@ -262,7 +218,7 @@ class CalendarView extends View {
   }
 
   /**
-   * adds listener to the DOM element that allows to drag Calendar Days (to later change the position of recipes inside the Calendar and show it in the main Recipe View window)
+   * allows dragging Weekly menu recipes to move the recipes or to display the recipe details (позволяет перетаскивание рецептов внутри еженедельного меню и в главное окно рецептов)
    * @param {none}
    * @returns {undefined}
    * @this {Object} CalendarView instanse
@@ -272,7 +228,6 @@ class CalendarView extends View {
     this._parentElement.addEventListener(
       'dragstart',
       function (e) {
-        //sets the data according to the number of the chosen day which is also stored in this._data
         this.hideFloatingButtons();
         const i = +e.target.closest('.calendar__day').dataset.day - 1;
         e.dataTransfer.setData('text/plain', JSON.stringify(this._data[i]));
@@ -281,7 +236,7 @@ class CalendarView extends View {
   }
 
   /**
-   * helps to return the HTML inside the "draggedover" Calendar Day to its initial conditions and returns default CalendarView settings
+   * helps to return the HTML inside the "draggedover" Calendar Day to its initial conditions and returns default CalendarView settings (позволяет вернуть контент дня из еженедельного меню, если перетаскивание не осуществилось)
    * @param {none}
    * @returns {undefined}
    * @this {Object} CalendarView instanse
@@ -289,8 +244,7 @@ class CalendarView extends View {
    */
   returnToDefaultDraggingSettings() {
     if (!this._draggedOverDay) return;
-    if (this._draggedOverDay.innerHTML.startsWith('Drop'))
-      this._draggedOverDay.innerHTML = this._lastDraggedOverDayInnerHTML;
+    if (this._draggedOverDay.innerHTML.startsWith('Drop')) this._draggedOverDay.innerHTML = this._lastDraggedOverDayInnerHTML;
     this._draggedOverDay.style.backgroundColor = '#f9f5f3';
     this._draggedOverDay = false;
     this._switch = true;

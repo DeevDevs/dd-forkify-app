@@ -1,20 +1,20 @@
 import View from './View.js';
 
-/////////////////////////////// MY ADDONS //////////////////////////////
+// this is an extension of the View class, and it is responsible for displaying messages and the loading spinner in the notifications window. (Это расширения класса View, которое отвечает за отображение сообщений или спиннера загрузки в окне оповещений)
 class DialogueWindowView extends View {
   _parentElement = document.querySelector('.dialogue__window');
   _successMessage = 'Shopping list has been successfully created';
   _timer1;
   _timer2;
 
-  // display the message window
+  // display the notifications window (отображает окно оповещений)
   displayDialogueWindow() {
     this._parentElement.classList.remove('hidden');
     this._parentElement.style.opacity = 1;
   }
 
   /**
-   * makes the dialogue window get dimmer and then disappear
+   * makes the dialogue window get dimmer and then disappear (заставляет окно оповещений медленно исчезать)
    * @param {none}
    * @returns {undefined}
    * @this {Object} dialogueWindowView instance

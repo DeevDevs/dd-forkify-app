@@ -24,23 +24,28 @@ class RecipeView extends View {
   }
 
   /**
-   * Render the received object to the DOM
+   * triggers the change in the number of servings (запускает процесс смены количества порций)
    * @param {function} function that updates the number of servings
    * @returns {undefined}
    * @this {Object} recipeView instance
-   * @author Jonas Shmedtmann
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
    */
   addHandlerUpdateServings(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--update-servings');
       if (!btn) return;
       const { updateTo } = btn.dataset;
-      //it retrieves the number of servings from the button data and sends it to the controller
       if (+updateTo > 0) handler(+updateTo);
     });
   }
 
-  //See Controller.js ... this function triggers the adding/removing Bookmark function
+  /**
+   * triggers adding/removing bookmars (запускает процесс добавления/удаления закладки)
+   * @param {function} function that updates the number of servings
+   * @returns {undefined}
+   * @this {Object} recipeView instance
+   * @author Jonas Shmedtmann (written by Dmitriy Vnuchkov)
+   */
   addHandlerAddBookmark(handler) {
     this._parentElement.addEventListener('click', function (e) {
       const btn = e.target.closest('.btn--bookmark');
@@ -49,9 +54,9 @@ class RecipeView extends View {
     });
   }
 
-  //inside, we map over the array of ingredients to create a list of ingredients using html code. So, the function there will return a string of html code for those ingredients.
+  //
   /**
-   * generates the recipe DOM element that is later rendered in the main window
+   * generates DOM-elements that represent content of the main recipe window (создает DOM-элементы которые отображают контент главного блока с рецептом)
    * @param {none}
    * @returns {string} HTML code to render
    * @this {Object} recipeView instance
@@ -65,7 +70,6 @@ class RecipeView extends View {
               <span>${this._data.title}</span>
             </h1>
           </figure>
-
           <div class="recipe__details">
             <div class="recipe__info">
               <svg class="recipe__info-icon">
@@ -80,7 +84,6 @@ class RecipeView extends View {
               </svg>
               <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
               <span class="recipe__info-text">servings</span>
-
               <div class="recipe__info-buttons">
                 <button class="btn--tiny btn--update-servings" data-update-to="${this._data.servings - 1}">
                   <svg>
@@ -94,7 +97,6 @@ class RecipeView extends View {
                 </button>
               </div>
             </div>
-            
             <div class="recipe__user-generated ${this._data.key ? '' : 'hidden'}">
                <svg>
                  <use href="${icons}#icon-user"></use>
@@ -106,16 +108,12 @@ class RecipeView extends View {
               </svg>
             </button>
           </div>
-
           <div class="recipe__ingredients">
             <h2 class="heading--2">Recipe ingredients</h2>
             <ul class="recipe__ingredient-list">
-
       ${this._data.ingredients.map(this._generateMarkupIngredient).join(' ')}
-            
             </ul>
           </div>
-
           <div class="recipe__directions">
             <h2 class="heading--2">How to cook it</h2>
             <p class="recipe__directions-text">
@@ -137,7 +135,7 @@ class RecipeView extends View {
   }
 
   /**
-   * generates HTML code for an ingredient from the recipes (used in _generateMarkup)
+   * generates HTML code for an ingredient from the recipes (создает HTML для каждого ингредиента)
    * @param {object} object an ingredient object from the array of ingredients in the recipe
    * @returns {string} HTML code to render
    * @this {Object} recipeView instance
@@ -158,10 +156,8 @@ class RecipeView extends View {
               `;
   }
 
-  //////////////////////////////// MY ADDONS /////////////////////////////////
-
   /**
-   * adds listener to the main recipe window to let it be dragged to the weekly plan
+   * adds listener to the main recipe window to let it be dragged to the weekly plan (добавляет приемник событий в главное окно с рецептом, чтобы рецепт можно было перетаскивать в еэенеднльное меню)
    * @param {none}
    * @returns {undefined}
    * @this {Object} recipeView instance
@@ -174,7 +170,7 @@ class RecipeView extends View {
         if (!this._parentElement.innerHTML.trim().startsWith('<fig')) return;
         e.dataTransfer.setData('text/plain', JSON.stringify(this._data));
         this._ghostElement = document.createElement('div');
-        //generates the element that is dragged instead of the main window ghost
+        //generates the element that is dragged instead of the main window ghost (создает элемент-призрак, который перетаскивается вместе с данными)
         this._ghostElement.innerHTML = `<span class="ghost">
                 <figure class="ghost__fig">
                     <img src="${this._data.image}" alt="${this._data.title}" />
@@ -184,7 +180,6 @@ class RecipeView extends View {
                 </div>
                 </a>
             </span>`;
-        //and appends it
         document.body.appendChild(this._ghostElement.firstChild);
         const ghost = document.querySelector('.ghost');
         e.dataTransfer.setDragImage(ghost, 0, 0);
@@ -192,7 +187,13 @@ class RecipeView extends View {
     );
   }
 
-  //removes the ghost once the drag is over
+  /**
+   * removes the ghost element once drag is over (убирает элемент-призрак по окончании перетаскивания)
+   * @param {none}
+   * @returns {undefined}
+   * @this {Object} recipeView instance
+   * @author Dmitriy Vnuchkov
+   */
   addHandlerDragEnd() {
     this._parentElement.addEventListener('dragend', function () {
       let ghost;
@@ -203,7 +204,13 @@ class RecipeView extends View {
     });
   }
 
-  //See controller.js triggers the function that can render the weekly plan
+  /**
+   * trigger data acceptance to update the weekly plan (запускает принятие и анализ данных для рендеринга еженедельного плана)
+   * @param {none}
+   * @returns {undefined}
+   * @this {Object} recipeView instance
+   * @author Dmitriy Vnuchkov
+   */
   addHandlerDropTo(handler) {
     this._parentElement.addEventListener('drop', function (e) {
       e.preventDefault();
@@ -211,7 +218,7 @@ class RecipeView extends View {
     });
   }
 
-  //allows the element to be dragged over (for the recipes from the weekly plan to be rendered in the main window)
+  //allows the element to be dragged over for the recipes from the weekly plan (позволяет окну быть полем для перетаскивания, чтобы рендерить рецепты из еженедельного плана)
   addHandlerDraggedOver() {
     this._parentElement.addEventListener('dragover', function (e) {
       e.preventDefault();

@@ -1,24 +1,16 @@
 import View from './View.js';
-import {
-  minNumberOfIngredients,
-  maxNumberOfIngredients,
-  defaultNumberOfIngredients,
-  MODAL_REFRESH_SEC,
-} from '../config.js';
+import { minNumberOfIngredients, maxNumberOfIngredients, defaultNumberOfIngredients, MODAL_REFRESH_SEC } from '../config.js';
 import icons from 'url:../../img/icons.svg';
 
+// this is an extension of the View class, and it is responsible for adding a new recipe (это расширение класса View, которое отвечает за добавление нового рецепта)
 class AddRecipeView extends View {
   _parentElement = document.querySelector('.add-recipe-window');
   _successMessage = `Recipe was successfully uploaded!`;
-
   _overlay = document.querySelector('.overlay');
   _btnOpen = document.querySelector('.nav__btn--add-recipe');
-
-  ///////////////////////////// MY ADDONS ///////////////////////////
   _numOfIngredients = defaultNumberOfIngredients;
   _data;
 
-  // ** WITH MY ADDONS
   constructor() {
     super();
     this._addHandlerShowWindow();
@@ -27,19 +19,17 @@ class AddRecipeView extends View {
     this._addHandlerLessIngredients();
   }
 
-  //hides/shows the uploadRecipe form
+  //hides/shows the uploadRecipe form (отображает/скрывает форму для нового рецепта)
   toggleWindow() {
     this._overlay.classList.toggle('hidden');
     this._btnOpen.blur();
     this._parentElement.classList.toggle('hidden');
   }
 
-  //adds listener to a button
+  //add listeners to a button (добавляет приемник событий)
   _addHandlerShowWindow() {
     this._btnOpen.addEventListener('click', this.toggleWindow.bind(this));
   }
-
-  //adds listeners to the doc.body and form ** WITH MY ADDONS
   _addHandlerHideWindow() {
     this._parentElement.addEventListener(
       'click',
@@ -48,29 +38,22 @@ class AddRecipeView extends View {
         if (e.target.closest('.btn--close-modal')) this.toggleWindow();
       }.bind(this)
     );
-
     document.body.addEventListener(
       'keydown',
       function (e) {
-        if (
-          e.key === 'Escape' &&
-          !this._parentElement.classList.contains('hidden')
-        )
-          this.toggleWindow();
+        if (e.key === 'Escape' && !this._parentElement.classList.contains('hidden')) this.toggleWindow();
       }.bind(this)
     );
-
     this._overlay.addEventListener(
       'click',
       function () {
-        if (!this._parentElement.classList.contains('hidden'))
-          this.toggleWindow();
+        if (!this._parentElement.classList.contains('hidden')) this.toggleWindow();
       }.bind(this)
     );
   }
 
-  /** WITH MY ADDONS
-   * adds handler to the button in UI to add extra HTML code that is an extra row in the ingredients column
+  /**
+   * retrieves data from the form and sends it to be then processed and displayed (выводит данные из формы и инициирует сохранение нового рецепта)
    * @param {function} function that processes the recipe upload
    * @returns {undefined}
    * @this {Object} AddRecipeView instanse
@@ -97,7 +80,7 @@ class AddRecipeView extends View {
   //////////////////// ADDONS: ADDING EXTRA INGREDIENTS ///////////////////
 
   /**
-   * adds handler to the button in UI to add extra HTML code that is an extra row in the ingredients column
+   * allows adding extra ingredients (дает возможность добавлять ингредиенты)
    * @param {none}
    * @returns {undefined}
    * @this {Object} AddRecipeView instanse
@@ -111,19 +94,15 @@ class AddRecipeView extends View {
         if (this._numOfIngredients === maxNumberOfIngredients) return;
         if (e.target.closest('.btn--add--ing')) {
           this._numOfIngredients++;
-          document
-            .querySelector('.ingredients__column')
-            .insertAdjacentHTML('beforeend', this._newIngredientMarkup());
+          document.querySelector('.ingredients__column').insertAdjacentHTML('beforeend', this._newIngredientMarkup());
         }
-        document
-          .getElementById(`label-${this._numOfIngredients}`)
-          .scrollIntoView();
+        document.getElementById(`label-${this._numOfIngredients}`).scrollIntoView();
       }.bind(this)
     );
   }
 
   /**
-   * adds handler to the button in UI to remove one row in the ingredients column
+   * allows removing inredients (позволяет уменьшать число ингредиентов)
    * @param {none}
    * @returns {undefined}
    * @this {Object} AddRecipeView instanse
@@ -145,7 +124,7 @@ class AddRecipeView extends View {
   }
 
   /**
-   * generates an element that is later an extra row in the ingredient column
+   * generates an element that is later an extra row in the ingredient column (создает DOM-элемент нужный для добавления ингредиента)
    * @param {none}
    * @returns {string} HTML code with a row of input fields for a new ingredient
    * @this {Object} AddRecipeView instanse
@@ -162,11 +141,10 @@ class AddRecipeView extends View {
   }
 
   ///////////////////////////////////////
-  //////////////////// MY ADDONS: FIXING ERROR ///////////////////
-  // Only single attempt to upload a new recipe was possible before
+  // Only single attempt to upload a new recipe was possible before (ранее, только одна возможность добавить рецепт за сессию была доступна)
 
   /**
-   * hides and returns the elements in the form after the new recipe started to upload
+   * display the form after use either with or without content, depending on whether the upload was successful (отображает форм после использование - заполненную или нет, что зависит от попытки сохранить рецепт)
    * @param {none}
    * @returns {undefined}
    * @this {Object} AddRecipeView instanse
@@ -184,7 +162,7 @@ class AddRecipeView extends View {
   }
 
   /**
-   * generates a new form and adds it to UI
+   * generates a new form and adds it to UI (генерирует форму для добавления рецепта и отображает ее)
    * @param {none}
    * @returns {undefined}
    * @this {Object} AddRecipeView instanse
@@ -193,9 +171,7 @@ class AddRecipeView extends View {
   defaultWindowContent(withData = false) {
     let ingredientsHTML;
     if (withData) {
-      const ingredients = Object.entries(this._data).filter(entry =>
-        entry[0].startsWith('ing')
-      );
+      const ingredients = Object.entries(this._data).filter(entry => entry[0].startsWith('ing'));
       const setsOfIngredients = [];
       for (let i = 0; i < (Object.keys(this._data).length - 6) / 3; i++) {
         const temp = [];
@@ -208,21 +184,9 @@ class AddRecipeView extends View {
         .map((ing, i) => {
           return `<label id="label-${i + 1}">Ingredient ${i + 1}</label>
       <div class="upload__row__ingredients" id="div-${i + 1}">
-        <span><input value="${
-          ing[0][1]
-        }" type="text" required name="ingredientZqZ${
-            i + 1
-          }" placeholder="Quantity" size="4"/></span>
-        <span><input value="${
-          ing[1][1]
-        }" type="text" required name="ingredientZuZ${
-            i + 1
-          }" placeholder="Unit" size="2"/></span>
-        <span><input value="${
-          ing[2][1]
-        }" type="text" required name="ingredientZdZ${
-            i + 1
-          }" placeholder="Description" size="6"/></span>
+        <span><input value="${ing[0][1]}" type="text" required name="ingredientZqZ${i + 1}" placeholder="Quantity" size="4"/></span>
+        <span><input value="${ing[1][1]}" type="text" required name="ingredientZuZ${i + 1}" placeholder="Unit" size="2"/></span>
+        <span><input value="${ing[2][1]}" type="text" required name="ingredientZdZ${i + 1}" placeholder="Description" size="6"/></span>
       </div>`;
         })
         .join('');
@@ -233,29 +197,17 @@ class AddRecipeView extends View {
         <div class="upload__column">
           <h3 class="upload__heading">Recipe data</h3>
           <label>Title</label>
-          <input value="${
-            withData ? this._data.title : ''
-          }" required name="title" type="text" />
+          <input value="${withData ? this._data.title : ''}" required name="title" type="text" />
           <label>URL</label>
-          <input value="${
-            withData ? this._data.sourceURL : ''
-          }" required name="sourceUrl" type="text" />
+          <input value="${withData ? this._data.sourceURL : ''}" required name="sourceUrl" type="text" />
           <label>Image URL</label>
-          <input value="${
-            withData ? this._data.image : ''
-          }" required name="image" type="text" />
+          <input value="${withData ? this._data.image : ''}" required name="image" type="text" />
           <label>Publisher</label>
-          <input value="${
-            withData ? this._data.publisher : ''
-          }" required name="publisher" type="text" />
+          <input value="${withData ? this._data.publisher : ''}" required name="publisher" type="text" />
           <label>Prep time</label>
-          <input value="${
-            withData ? this._data.cookingTime : ''
-          }" required name="cookingTime" type="number" />
+          <input value="${withData ? this._data.cookingTime : ''}" required name="cookingTime" type="number" />
           <label>Servings</label>
-          <input value="${
-            withData ? this._data.servings : ''
-          }" required name="servings" type="number" />
+          <input value="${withData ? this._data.servings : ''}" required name="servings" type="number" />
         </div>
         <div class="upload__column ingredients__column">
           <h3 class="upload__heading ingredients__name">Ingredients</h3>

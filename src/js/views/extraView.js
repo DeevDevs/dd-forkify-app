@@ -1,13 +1,11 @@
 import View from './View.js';
 
-//////////////////////////// MY ADDONS ///////////////////////////////
+// this class is an extension of the View class and is responsible for the shopping list and the calories counting functionality. Also, it is responsible for the main window with extra functionality. (Этот расширение View класса, которое отвечает за главное окно с дополнительными функциями, а также за функциональность Списка покупок и Подсчета калорий)
 class ExtraView extends View {
   _parentElement = document.querySelector('.modal__window');
   _btnOpen = document.querySelector('.nav__btn--open-functions');
   _btnClose = document.querySelector('.btn--close-modal__window');
-  // Shopping List btn
   _btnAddToList = document.querySelector('.btn--shop--list');
-  // Calories API btn
   _btnUseApi = document.querySelector('.btn--api--use');
   _totalCalories = document.querySelector('.calories__api');
   _shoppingList = document.querySelector('.shopping__list');
@@ -18,17 +16,16 @@ class ExtraView extends View {
     this._makeWindowDraggable(this._parentElement);
   }
 
-  //displays and hides the weekly plan window
+  //displays and hides the weekly plan window (отображает/прячет окно дополнительных функций)
   _toggleWindow() {
     this._parentElement.classList.toggle('hidden');
     this._btnOpen.blur();
   }
 
-  //activates the buttons and commands that open/hide the weekly plan window
+  //activates the buttons and commands that open/hide the weekly plan window (добавляет приемники событий кнопкам в окне дополнительных функций)
   _addHandlerWindow() {
     this._btnOpen.addEventListener('click', this._toggleWindow.bind(this));
     this._btnClose.addEventListener('click', this._toggleWindow.bind(this));
-
     document.body.addEventListener(
       'keydown',
       function (e) {
@@ -37,8 +34,7 @@ class ExtraView extends View {
     );
   }
 
-  ///////////////////// CALORIES API FUNCTIONS ///////////////////
-  //See controller.js ... the handler initiates the request to count calories per serving
+  // triggers the calories counting (запускает подсчет калорий)
   addHandlerApi(handler) {
     this._btnUseApi.addEventListener(
       'click',
@@ -48,34 +44,33 @@ class ExtraView extends View {
     );
   }
 
-  //displays the number of calories
+  //displays the number of calories (отображает количество калорий)
   postCalories(value) {
     this._totalCalories.textContent = `Approximate number of calories per serving is ${value}`;
   }
 
-  ///////////////////// SHOPPING LIST FUNCTIONS ///////////////////
-  //See controller.js ... the handler initiates the generation of the shopping list
+  // triggers generation of the shopping list (запускает генерацию списка покупок)
   addHandlerShoppingList(handler) {
     this._btnAddToList.addEventListener('click', handler);
   }
 
+  // generates the shopping list (создает список покупок)
   renderShoppingList(data) {
-    console.log(data);
     const fullList = data.map(item => `<span>${item}</span><br />`);
     this._shoppingList.innerHTML = `<div>${fullList.join('')}</div>`;
   }
 
-  ///////////////////// DRAGGABLE WINDOW ///////////////////
-
   /**
-   * allows user to drag the weekly plan window
+   * allows user to drag the weekly plan window (позволяет пользователю перетаскивать окно дополнительных функций)
    * @param {DOM element} element to drag
    * @returns {undefined}
    * @author Dmitriy Vnuchkov // used https://www.w3schools.com/howto/howto_js_draggable.asp
    */
   _makeWindowDraggable(modalWindow) {
-    // prettier-ignore
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    let pos1 = 0,
+      pos2 = 0,
+      pos3 = 0,
+      pos4 = 0;
 
     document.querySelector('.draggingbar').onmousedown = dragMouseDown;
 
@@ -105,13 +100,11 @@ class ExtraView extends View {
       if (modalWindow.offsetLeft - pos1 < 0) modalWindow.style.left = 0 + 'px';
       if (modalWindow.offsetLeft - pos1 > maxWidth - modalWindow.offsetWidth / 2)
         modalWindow.style.left = maxWidth - modalWindow.offsetWidth / 2 + 'px';
-      //prettier-ignore
-      if (modalWindow.offsetTop - pos2 >maxHeight - modalWindow.offsetHeight / 2)
+      if (modalWindow.offsetTop - pos2 > maxHeight - modalWindow.offsetHeight / 2)
         modalWindow.style.top = maxHeight - modalWindow.offsetHeight / 2 + 'px';
     }
 
     function closeDragElement() {
-      // stop moving when mouse button is released
       document.onmouseup = null;
       document.onmousemove = null;
     }
